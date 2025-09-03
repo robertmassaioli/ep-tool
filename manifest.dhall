@@ -1,7 +1,7 @@
 { app =
   { features.autoUserConsent = True
   , id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
-  , runtime.name = "nodejs18.x"
+  , runtime.name = "nodejs20.x"
   }
 , modules =
   { function = [ { handler = "index.handler", key = "resolver" } ]
