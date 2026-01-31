@@ -1,4 +1,44 @@
-{ app =
+let -- Shared display condition types and logic
+    ConditionParams = { entity : Optional Text, propertyKey : Text, objectName : Text, value : Text }
+in let LeafCondition = { condition : Text, params : ConditionParams }
+in let BranchCondition = { condition : Text, conditions : List LeafCondition }
+in let TopCondition = { condition : Text, conditions : List BranchCondition }
+in let -- Shared display conditions for entity property modules
+      entityPropertyDisplayConditions = 
+      [ { condition = "or"
+        , conditions =
+          [ { condition = "and"
+            , conditions =
+              [ { condition = "entity_property_equal"
+                , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "true" }
+                } : LeafCondition
+              ]
+            } : BranchCondition
+          , { condition = "and"
+            , conditions =
+              [ { condition = "entity_property_not_exists"
+                , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "", value = "" }
+                } : LeafCondition
+              , { condition = "app_property_equal"
+                , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
+                } : LeafCondition
+              ]
+            } : BranchCondition
+          , { condition = "and"
+            , conditions =
+              [ { condition = "entity_property_equal"
+                , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "null" }
+                } : LeafCondition
+              , { condition = "app_property_equal"
+                , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
+                } : LeafCondition
+              ]
+            } : BranchCondition
+          ]
+        } : TopCondition
+      ]
+
+in { app =
   { features.autoUserConsent = True
   , id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
   , runtime.name = "nodejs20.x"
@@ -31,92 +71,18 @@
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity properties"
-      , conditions =
-        let ConditionParams = { entity : Optional Text, propertyKey : Text, objectName : Text, value : Text }
-        let LeafCondition = { condition : Text, params : ConditionParams }
-        let BranchCondition = { condition : Text, conditions : List LeafCondition }
-        let TopCondition = { condition : Text, conditions : List BranchCondition }
-        
-        in [ { condition = "or"
-             , conditions =
-               [ { condition = "and"
-                 , conditions =
-                   [ { condition = "entity_property_equal"
-                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "true" }
-                     } : LeafCondition
-                   ]
-                 } : BranchCondition
-               , { condition = "and"
-                 , conditions =
-                   [ { condition = "entity_property_not_exists"
-                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "", value = "" }
-                     } : LeafCondition
-                   , { condition = "app_property_equal"
-                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
-                     } : LeafCondition
-                   ]
-                 } : BranchCondition
-               , { condition = "and"
-                 , conditions =
-                   [ { condition = "entity_property_equal"
-                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "null" }
-                     } : LeafCondition
-                   , { condition = "app_property_equal"
-                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
-                     } : LeafCondition
-                   ]
-                 } : BranchCondition
-               ]
-             } : TopCondition
-           ]
+      , conditions = entityPropertyDisplayConditions
       }
     ]
   , `jira:projectPage` =
-    let ConditionParams = { entity : Optional Text, propertyKey : Text, objectName : Text, value : Text }
-    let LeafCondition = { condition : Text, params : ConditionParams }
-    let BranchCondition = { condition : Text, conditions : List LeafCondition }
-    let TopCondition = { condition : Text, conditions : List BranchCondition }
-    
-    in [ { icon = "resource:main;entity-properties-icon.svg"
-         , key = "project-entity-properties"
-         , resolver.function = "resolver"
-         , resource = "main"
-         , title = "Entity properties"
-         , conditions =
-           [ { condition = "or"
-             , conditions =
-               [ { condition = "and"
-                 , conditions =
-                   [ { condition = "entity_property_equal"
-                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "true" }
-                     } : LeafCondition
-                   ]
-                 } : BranchCondition
-               , { condition = "and"
-                 , conditions =
-                   [ { condition = "entity_property_not_exists"
-                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "", value = "" }
-                     } : LeafCondition
-                   , { condition = "app_property_equal"
-                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
-                     } : LeafCondition
-                   ]
-                 } : BranchCondition
-               , { condition = "and"
-                 , conditions =
-                   [ { condition = "entity_property_equal"
-                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "null" }
-                     } : LeafCondition
-                   , { condition = "app_property_equal"
-                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
-                     } : LeafCondition
-                   ]
-                 } : BranchCondition
-               ]
-             } : TopCondition
-           ]
-         }
-       ]
+    [ { icon = "resource:main;entity-properties-icon.svg"
+      , key = "project-entity-properties"
+      , resolver.function = "resolver"
+      , resource = "main"
+      , title = "Entity properties"
+      , conditions = entityPropertyDisplayConditions
+      }
+    ]
   }
 , permissions =
   { content.styles = [ "unsafe-inline" ]
