@@ -17,6 +17,8 @@
         , { route = "workflow-transitions"
           , title = "Workflow Transition entity properties"
           }
+        , { route = "admin-settings", title = "Admin Settings" }
+        , { route = "user-preferences", title = "User Preferences" }
         ]
       , resolver.function = "resolver"
       , resource = "main"
@@ -29,16 +31,92 @@
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity properties"
+      , conditions =
+        let ConditionParams = { entity : Optional Text, propertyKey : Text, objectName : Text, value : Text }
+        let LeafCondition = { condition : Text, params : ConditionParams }
+        let BranchCondition = { condition : Text, conditions : List LeafCondition }
+        let TopCondition = { condition : Text, conditions : List BranchCondition }
+        
+        in [ { condition = "or"
+             , conditions =
+               [ { condition = "and"
+                 , conditions =
+                   [ { condition = "entity_property_equal"
+                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "true" }
+                     } : LeafCondition
+                   ]
+                 } : BranchCondition
+               , { condition = "and"
+                 , conditions =
+                   [ { condition = "entity_property_not_exists"
+                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "", value = "" }
+                     } : LeafCondition
+                   , { condition = "app_property_equal"
+                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
+                     } : LeafCondition
+                   ]
+                 } : BranchCondition
+               , { condition = "and"
+                 , conditions =
+                   [ { condition = "entity_property_equal"
+                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "null" }
+                     } : LeafCondition
+                   , { condition = "app_property_equal"
+                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
+                     } : LeafCondition
+                   ]
+                 } : BranchCondition
+               ]
+             } : TopCondition
+           ]
       }
     ]
   , `jira:projectPage` =
-    [ { icon = "resource:main;entity-properties-icon.svg"
-      , key = "project-entity-properties"
-      , resolver.function = "resolver"
-      , resource = "main"
-      , title = "Entity properties"
-      }
-    ]
+    let ConditionParams = { entity : Optional Text, propertyKey : Text, objectName : Text, value : Text }
+    let LeafCondition = { condition : Text, params : ConditionParams }
+    let BranchCondition = { condition : Text, conditions : List LeafCondition }
+    let TopCondition = { condition : Text, conditions : List BranchCondition }
+    
+    in [ { icon = "resource:main;entity-properties-icon.svg"
+         , key = "project-entity-properties"
+         , resolver.function = "resolver"
+         , resource = "main"
+         , title = "Entity properties"
+         , conditions =
+           [ { condition = "or"
+             , conditions =
+               [ { condition = "and"
+                 , conditions =
+                   [ { condition = "entity_property_equal"
+                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "true" }
+                     } : LeafCondition
+                   ]
+                 } : BranchCondition
+               , { condition = "and"
+                 , conditions =
+                   [ { condition = "entity_property_not_exists"
+                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "", value = "" }
+                     } : LeafCondition
+                   , { condition = "app_property_equal"
+                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
+                     } : LeafCondition
+                   ]
+                 } : BranchCondition
+               , { condition = "and"
+                 , conditions =
+                   [ { condition = "entity_property_equal"
+                     , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "null" }
+                     } : LeafCondition
+                   , { condition = "app_property_equal"
+                     , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
+                     } : LeafCondition
+                   ]
+                 } : BranchCondition
+               ]
+             } : TopCondition
+           ]
+         }
+       ]
   }
 , permissions =
   { content.styles = [ "unsafe-inline" ]
