@@ -46,7 +46,11 @@ async function getAdminConfigInternal() {
     }
     
     const property = await response.json();
-    return { ...property.value, source: 'admin' };
+    // Parse the JSON string value if it's a string
+    const parsedValue = typeof property.value === 'string' 
+      ? JSON.parse(property.value) 
+      : property.value;
+    return { ...parsedValue, source: 'admin' };
   } catch (error) {
     console.error('Error getting admin config:', error);
     // Return safe default on error
@@ -105,7 +109,11 @@ async function getUserPreferenceInternal({ accountId } = {}) {
     }
     
     const property = await response.json();
-    return { ...property.value, source: 'user' };
+    // Parse the JSON string value if it's a string
+    const parsedValue = typeof property.value === 'string' 
+      ? JSON.parse(property.value) 
+      : property.value;
+    return { ...parsedValue, source: 'user' };
   } catch (error) {
     console.error('Error getting user preference:', error);
     return { enabled: null, source: 'error' };
