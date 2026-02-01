@@ -59,36 +59,55 @@ async function getAdminConfigInternal() {
 }
 
 // Admin Configuration Functions
-resolver.define('getAdminConfig', getAdminConfigInternal);
+resolver.define('getAdminConfig', async (req) => {
+  console.log('getAdminConfig called');
+  return await getAdminConfigInternal();
+});
 
-resolver.define('setAdminConfig', async ({ defaultEnabled }) => {
+resolver.define('setAdminConfig', async (req) => {
+  console.log('setAdminConfig called with payload:', req.payload);
+  
+  const { defaultEnabled } = req.payload;
+  
   try {
+    console.log('Checking admin permissions...');
     // Check admin permissions
     const isAdmin = await checkAdminPermissions();
+    console.log('Admin permission check result:', isAdmin);
+    
     if (!isAdmin) {
+      console.log('User does not have admin permissions, throwing error');
       throw new Error('Insufficient permissions: Admin access required');
     }
     
+    console.log('Getting current user...');
     const user = await getCurrentUser();
+    console.log('Current user:', { accountId: user.accountId, displayName: user.displayName });
+    
     const config = {
       defaultEnabled: Boolean(defaultEnabled),
       lastModified: new Date().toISOString(),
       modifiedBy: user.accountId,
       modifiedByDisplayName: user.displayName
     };
+    console.log('Prepared config object:', config);
     
+    console.log('Storing config in app properties...');
     // Store in app properties (for display conditions)
-    await api.asApp().requestJira(
+    const response = await api.asApp().requestJira(
       route`/rest/forge/1/app/properties/${ADMIN_CONFIG_KEY}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config)
       }
     );
+    console.log('App property storage response status:', response.status);
     
+    console.log('setAdminConfig completed successfully');
     return { success: true, config };
   } catch (error) {
     console.error('Error setting admin config:', error);
+    console.error('Error stack:', error.stack);
     throw error;
   }
 });
@@ -121,9 +140,15 @@ async function getUserPreferenceInternal({ accountId } = {}) {
 }
 
 // User Preference Functions
-resolver.define('getUserPreference', getUserPreferenceInternal);
+resolver.define('getUserPreference', async (req) => {
+  console.log('getUserPreference called with payload:', req.payload);
+  const { accountId } = req.payload || {};
+  return await getUserPreferenceInternal({ accountId });
+});
 
-resolver.define('setUserPreference', async ({ enabled }) => {
+resolver.define('setUserPreference', async (req) => {
+  console.log('setUserPreference called with payload:', req.payload);
+  const { enabled } = req.payload;
   try {
     const user = await getCurrentUser();
     const preference = {
@@ -202,10 +227,14 @@ async function getEffectiveSettingInternal() {
 }
 
 // Helper function to get effective setting for current user
-resolver.define('getEffectiveSetting', getEffectiveSettingInternal);
+resolver.define('getEffectiveSetting', async (req) => {
+  console.log('getEffectiveSetting called');
+  return await getEffectiveSettingInternal();
+});
 
 // Admin utility function to get system status
-resolver.define('getSystemStatus', async () => {
+resolver.define('getSystemStatus', async (req) => {
+  console.log('getSystemStatus called');
   try {
     const isAdmin = await checkAdminPermissions();
     const user = await getCurrentUser();
@@ -231,7 +260,8 @@ resolver.define('getSystemStatus', async () => {
 });
 
 // Debug function for development
-resolver.define('debugProperties', async () => {
+resolver.define('debugProperties', async (req) => {
+  console.log('debugProperties called');
   try {
     const user = await getCurrentUser();
     

@@ -24,16 +24,6 @@ in let -- Shared display conditions for entity property modules
                 } : LeafCondition
               ]
             } : BranchCondition
-          , { condition = "and"
-            , conditions =
-              [ { condition = "entity_property_equal"
-                , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "null" }
-                } : LeafCondition
-              , { condition = "app_property_equal"
-                , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
-                } : LeafCondition
-              ]
-            } : BranchCondition
           ]
         } : TopCondition
       ]
