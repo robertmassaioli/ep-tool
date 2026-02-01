@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
-import { Router, useHistory } from 'react-router';
+import { Router } from 'react-router';
+import { useHistory } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { isPresent } from 'ts-is-present';
 import { useViewContext } from './ViewContext';

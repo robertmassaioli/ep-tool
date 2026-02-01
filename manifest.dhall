@@ -87,7 +87,7 @@ in { app =
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity Property Tool Settings"
-      , useConfigPage = True
+      , useAsConfig = True
       }
     ]
   }
