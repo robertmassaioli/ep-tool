@@ -32,8 +32,8 @@ async function getCurrentUser() {
   }
 }
 
-// Admin Configuration Functions
-resolver.define('getAdminConfig', async () => {
+// Internal function to get admin config
+async function getAdminConfigInternal() {
   try {
     // Try to get from app properties first
     const response = await api.asApp().requestJira(
@@ -52,7 +52,10 @@ resolver.define('getAdminConfig', async () => {
     // Return safe default on error
     return { defaultEnabled: true, source: 'error' };
   }
-});
+}
+
+// Admin Configuration Functions
+resolver.define('getAdminConfig', getAdminConfigInternal);
 
 resolver.define('setAdminConfig', async ({ defaultEnabled }) => {
   try {
@@ -86,8 +89,8 @@ resolver.define('setAdminConfig', async ({ defaultEnabled }) => {
   }
 });
 
-// User Preference Functions
-resolver.define('getUserPreference', async ({ accountId } = {}) => {
+// Internal function to get user preference
+async function getUserPreferenceInternal({ accountId } = {}) {
   try {
     // Use provided accountId or get current user
     const targetAccountId = accountId || (await getCurrentUser()).accountId;
@@ -107,7 +110,10 @@ resolver.define('getUserPreference', async ({ accountId } = {}) => {
     console.error('Error getting user preference:', error);
     return { enabled: null, source: 'error' };
   }
-});
+}
+
+// User Preference Functions
+resolver.define('getUserPreference', getUserPreferenceInternal);
 
 resolver.define('setUserPreference', async ({ enabled }) => {
   try {
@@ -151,10 +157,10 @@ resolver.define('setUserPreference', async ({ enabled }) => {
   }
 });
 
-// Helper function to get effective setting for current user
-resolver.define('getEffectiveSetting', async () => {
+// Internal function to get effective setting
+async function getEffectiveSettingInternal() {
   try {
-    const userPref = await resolver.invoke('getUserPreference');
+    const userPref = await getUserPreferenceInternal();
     
     // If user has explicit preference, use it
     if (userPref.enabled !== null) {
@@ -167,7 +173,7 @@ resolver.define('getEffectiveSetting', async () => {
     }
     
     // Otherwise, use admin setting
-    const adminConfig = await resolver.invoke('getAdminConfig');
+    const adminConfig = await getAdminConfigInternal();
     return { 
       enabled: adminConfig.defaultEnabled, 
       source: 'admin',
@@ -185,16 +191,19 @@ resolver.define('getEffectiveSetting', async () => {
       error: error.message
     };
   }
-});
+}
+
+// Helper function to get effective setting for current user
+resolver.define('getEffectiveSetting', getEffectiveSettingInternal);
 
 // Admin utility function to get system status
 resolver.define('getSystemStatus', async () => {
   try {
     const isAdmin = await checkAdminPermissions();
     const user = await getCurrentUser();
-    const adminConfig = await resolver.invoke('getAdminConfig');
-    const userPref = await resolver.invoke('getUserPreference');
-    const effective = await resolver.invoke('getEffectiveSetting');
+    const adminConfig = await getAdminConfigInternal();
+    const userPref = await getUserPreferenceInternal();
+    const effective = await getEffectiveSettingInternal();
     
     return {
       user: {
