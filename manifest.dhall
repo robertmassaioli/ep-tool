@@ -1,32 +1,13 @@
-let -- Shared display condition types and logic
-    ConditionParams = { entity : Optional Text, propertyKey : Text, objectName : Text, value : Text }
-in let LeafCondition = { condition : Text, params : ConditionParams }
-in let BranchCondition = { condition : Text, conditions : List LeafCondition }
-in let TopCondition = { condition : Text, conditions : List BranchCondition }
-in let -- Shared display conditions for entity property modules
-      entityPropertyDisplayConditions =
-      [ { condition = "or"
-        , conditions =
-          [ { condition = "and"
-            , conditions =
-              [ { condition = "entity_property_equal"
-                , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "enabled", value = "true" }
-                } : LeafCondition
-              ]
-            } : BranchCondition
-          , { condition = "and"
-            , conditions =
-              [ { condition = "entity_property_not_exists"
-                , params = { entity = Some "user", propertyKey = "entity-properties-user-preference", objectName = "", value = "" }
-                } : LeafCondition
-              , { condition = "app_property_equal"
-                , params = { entity = None Text, propertyKey = "entity-properties-admin-config", objectName = "defaultEnabled", value = "true" }
-                } : LeafCondition
-              ]
-            } : BranchCondition
-          ]
-        } : TopCondition
-      ]
+let -- For now, simplify to just user preference check
+    -- TODO: Add proper admin default logic once Dhall types work
+    entityPropertyDisplayConditions = {
+      entity_property = { 
+        entity = "user", 
+        propertyKey = "entity-properties-user-preference", 
+        objectName = "enabled", 
+        value = "true" 
+      }
+    }
 
 in { app =
   { id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
@@ -59,7 +40,7 @@ in { app =
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity properties"
-      , conditions = entityPropertyDisplayConditions
+      , displayConditions = entityPropertyDisplayConditions
       }
     ]
   , `jira:projectPage` =
@@ -68,7 +49,7 @@ in { app =
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity properties"
-      , conditions = entityPropertyDisplayConditions
+      , displayConditions = entityPropertyDisplayConditions
       }
     ]
   , `jira:adminPage` =
@@ -77,7 +58,7 @@ in { app =
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity Property Tool Settings"
-      , useAsConfig = True
+      , useConfigPage = True
       }
     ]
   }
