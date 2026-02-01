@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
-import { Router } from 'react-router';
-import { useHistory } from 'react-router-dom';
+import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { isPresent } from 'ts-is-present';
 import { useViewContext } from './ViewContext';
 
 export function Link ({ to, children }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <a
       href={to}
       onClick={(event) => {
         event.preventDefault();
-        history.push(to);
+        navigate(to);
       }}
     >
       {children}
@@ -38,6 +38,7 @@ export function SpaRouter (props) {
 
   useEffect(() => {
     view.createHistory().then((newHistory) => {
+      console.log("Setting new history", newHistory);
       setHistory(newHistory);
       console.log('created history', newHistory);
     }).catch(e => {
@@ -54,11 +55,11 @@ export function SpaRouter (props) {
     <div>
       {history
         ? (
-          <Router
+          <HistoryRouter
             history={history}
           >
             {props.children}
-          </Router>
+          </HistoryRouter>
           )
         : (
             'Loading...'

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import App from './App';
 import { AddPropertyModal } from './AddPropertyModal';
 
@@ -44,16 +44,16 @@ ReactDOM.render(
       <ContextRoute moduleKey='entity-properties-global'>
         <ContextRoute noModal>
           <SpaRouter>
-            <Switch>
+            <Routes>
               {/* TODO use an index route here? */}
-              <Route exact path='/' component={EntityPropertyGlobalHome} />
-              <Route exact path='/user' component={UserSelector} />
-              <Route exact path='/issue-type' component={IssueTypeSelector} />
-              <Route exact path='/dashboard-items' component={DashboardSelector} />
-              <Route exact path='/workflow-transitions' component={WorkflowSelector} />
-              <Route exact path='/user-preferences' component={UserPreferences} />
+              <Route path='/' element={<EntityPropertyGlobalHome />} />
+              <Route path='/user' element={<UserSelector />} />
+              <Route path='/issue-type' element={<IssueTypeSelector />} />
+              <Route path='/dashboard-items' element={<DashboardSelector />} />
+              <Route path='/workflow-transitions' element={<WorkflowSelector />} />
+              <Route path='/user-preferences' element={<UserPreferences />} />
               {/* TODO how do I setup the add-property modal? */}
-            </Switch>
+            </Routes>
           </SpaRouter>
         </ContextRoute>
         <ContextRoute modalType='add-property'>
