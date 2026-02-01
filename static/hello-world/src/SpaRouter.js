@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
-import { Router, useNavigate } from 'react-router';
+import { Router, useHistory } from 'react-router';
 import { createMemoryHistory } from 'history';
 import { isPresent } from 'ts-is-present';
 import { useViewContext } from './ViewContext';
 
 export function Link ({ to, children }) {
-  const navigate = useNavigate();
+  const history = useHistory();
   return (
     <a
       href={to}
       onClick={(event) => {
         event.preventDefault();
-        navigate(to);
+        history.push(to);
       }}
     >
       {children}
