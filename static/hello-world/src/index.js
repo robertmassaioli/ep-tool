@@ -18,6 +18,8 @@ import { ViewContext } from './ViewContext';
 import { DashboardSelector } from './DashboardSelector';
 import { WorkflowSelector } from './WorkflowSelector';
 import { EntityPropertyGlobalHome } from './EntityPropertyGlobalHome';
+import { AdminSettings } from './AdminSettings';
+import { UserPreferences } from './UserPreferences';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -48,6 +50,8 @@ ReactDOM.render(
               <Route exact path='/issue-type' element={<IssueTypeSelector />} />
               <Route exact path='/dashboard-items' element={<DashboardSelector />} />
               <Route exact path='/workflow-transitions' element={<WorkflowSelector />} />
+              <Route exact path='/admin-settings' element={<AdminSettings />} />
+              <Route exact path='/user-preferences' element={<UserPreferences />} />
               {/* TODO how do I setup the add-property modal? */}
             </Routes>
           </SpaRouter>

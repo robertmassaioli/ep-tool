@@ -1,11 +1,209 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { invoke } from '@forge/bridge';
+import { useHistory } from 'react-router-dom';
+import Button, { ButtonGroup } from '@atlaskit/button/standard-button';
+import Spinner from '@atlaskit/spinner';
+import { Banner } from '@atlaskit/banner';
+import SettingsIcon from '@atlaskit/icon/glyph/settings';
+import PersonIcon from '@atlaskit/icon/glyph/person';
+import InfoIcon from '@atlaskit/icon/glyph/info';
+import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
+import WarningIcon from '@atlaskit/icon/glyph/warning';
 
-export function EntityPropertyGlobalHome () {
+export function EntityPropertyGlobalHome() {
+  const history = useHistory();
+  const [effectiveSetting, setEffectiveSetting] = useState(null);
+  const [systemStatus, setSystemStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadStatus();
+  }, []);
+
+  async function loadStatus() {
+    try {
+      const [effective, status] = await Promise.all([
+        invoke('getEffectiveSetting'),
+        invoke('getSystemStatus')
+      ]);
+      
+      setEffectiveSetting(effective);
+      setSystemStatus(status);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading status:', err);
+      setError('Could not load current settings status');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function getStatusMessage() {
+    if (!effectiveSetting) return null;
+    
+    if (effectiveSetting.enabled) {
+      return {
+        type: 'success',
+        icon: <SuccessIcon label="Enabled" />,
+        message: `Entity property tools are ENABLED for you (source: ${effectiveSetting.source})`
+      };
+    } else {
+      return {
+        type: 'warning',
+        icon: <WarningIcon label="Disabled" />,
+        message: `Entity property tools are DISABLED for you (source: ${effectiveSetting.source})`
+      };
+    }
+  }
+
   return (
-    <>
-      <p>Welcome to the Entity Property Tool. A tool meant for App Developers to play with Entity Properties on their development sites.</p>
-      <p>For Issue and Project Entity Property manipulation, please visit the Issue or Project in question.</p>
-      <p>For all other Entity Properties, please select the appropriate sub-menu option.</p>
-    </>
+    <div>
+      <h1>Entity Property Tool</h1>
+      <p>
+        A tool for App Developers to manage Entity Properties on JIRA entities.
+      </p>
+      
+      {loading && (
+        <div style={{ margin: '20px 0', textAlign: 'center' }}>
+          <Spinner size="small" />
+          <span style={{ marginLeft: '8px' }}>Loading status...</span>
+        </div>
+      )}
+      
+      {error && (
+        <Banner
+          icon={<InfoIcon label="Info" />}
+          appearance="warning"
+        >
+          {error}
+        </Banner>
+      )}
+      
+      {effectiveSetting && !loading && (
+        <div style={{ margin: '20px 0' }}>
+          {(() => {
+            const status = getStatusMessage();
+            return (
+              <Banner
+                icon={status.icon}
+                appearance={status.type === 'success' ? 'confirmation' : 'warning'}
+              >
+                {status.message}
+                {effectiveSetting.source === 'user' && (
+                  <span style={{ marginLeft: '8px' }}>
+                    (You can change this in your preferences)
+                  </span>
+                )}
+                {effectiveSetting.source === 'admin' && (
+                  <span style={{ marginLeft: '8px' }}>
+                    (You can override this in your preferences)
+                  </span>
+                )}
+              </Banner>
+            );
+          })()}
+        </div>
+      )}
+
+      <div style={{ marginBottom: '30px' }}>
+        <h3>Settings & Preferences</h3>
+        <p>Manage visibility and access to entity property tools:</p>
+        
+        <ButtonGroup>
+          <Button
+            appearance="primary"
+            iconBefore={<PersonIcon />}
+            onClick={() => history.push('/user-preferences')}
+          >
+            My Preferences
+          </Button>
+          
+          {systemStatus?.user?.isAdmin && (
+            <Button
+              appearance="default"
+              iconBefore={<SettingsIcon />}
+              onClick={() => history.push('/admin-settings')}
+            >
+              Admin Settings
+            </Button>
+          )}
+        </ButtonGroup>
+        
+        {!systemStatus?.user?.isAdmin && systemStatus && (
+          <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+            <InfoIcon label="Info" size="small" /> You don't have administrator permissions to access global settings.
+          </p>
+        )}
+      </div>
+
+      <div>
+        <h3>Entity Property Management</h3>
+        <p>For Issue and Project Entity Properties, visit the respective Issue or Project.</p>
+        <p>For other Entity Properties, use the options below:</p>
+        <ul>
+          <li>
+            <Button
+              appearance="link"
+              onClick={() => history.push('/user')}
+              spacing="none"
+            >
+              User entity properties
+            </Button>
+          </li>
+          <li>
+            <Button
+              appearance="link"
+              onClick={() => history.push('/issue-type')}
+              spacing="none"
+            >
+              Issue Type entity properties
+            </Button>
+          </li>
+          <li>
+            <Button
+              appearance="link"
+              onClick={() => history.push('/dashboard-items')}
+              spacing="none"
+            >
+              Dashboard Item entity properties
+            </Button>
+          </li>
+          <li>
+            <Button
+              appearance="link"
+              onClick={() => history.push('/workflow-transitions')}
+              spacing="none"
+            >
+              Workflow Transition entity properties
+            </Button>
+          </li>
+        </ul>
+      </div>
+
+      {effectiveSetting && (
+        <div style={{ marginTop: '40px' }}>
+          <details>
+            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
+              Technical Details
+            </summary>
+            <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+              <p><strong>How it works:</strong></p>
+              <ul>
+                <li>Issue panels and project pages are controlled by display conditions</li>
+                <li>Your personal preference takes priority over admin defaults</li>
+                <li>Global pages (like this one) are always accessible for configuration</li>
+                <li>Changes take effect immediately across all Jira projects</li>
+              </ul>
+              
+              <p style={{ marginTop: '15px' }}>
+                <strong>Current effective setting:</strong> {effectiveSetting.enabled ? 'Enabled' : 'Disabled'} 
+                (source: {effectiveSetting.source})
+              </p>
+            </div>
+          </details>
+        </div>
+      )}
+    </div>
   );
 }
