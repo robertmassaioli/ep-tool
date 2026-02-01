@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
-import { unstable_HistoryRouter as HistoryRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { isPresent } from 'ts-is-present';
@@ -55,11 +55,12 @@ export function SpaRouter (props) {
     <div>
       {history
         ? (
-          <HistoryRouter
-            history={history}
+          <Router
+            location={history.location}
+            navigator={history}
           >
             {props.children}
-          </HistoryRouter>
+          </Router>
           )
         : (
             'Loading...'
