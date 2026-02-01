@@ -154,7 +154,7 @@ export function AdminSettings() {
             <span>
               <strong>Enable entity property tools by default for all users</strong>
               <br />
-              <small style={{ color: '#666' }}>
+              <small style={{ color: 'var(--text-color-secondary)' }}>
                 When enabled, all users will see entity property tools unless they explicitly disable them in their preferences.
                 When disabled, users must explicitly enable the tools to see them.
               </small>
@@ -170,7 +170,7 @@ export function AdminSettings() {
         )}
       </div>
       
-      <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+      <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
         <h4 style={{ margin: 0, marginBottom: '8px' }}>
           <InfoIcon label="Info" size="small" /> Important Notes
         </h4>
@@ -183,7 +183,7 @@ export function AdminSettings() {
       </div>
       
       {adminConfig?.lastModified && (
-        <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#e3fcef', borderRadius: '4px' }}>
+        <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
           <h4 style={{ margin: 0, marginBottom: '8px' }}>Last Modified</h4>
           <p style={{ margin: 0 }}>
             <strong>When:</strong> {new Date(adminConfig.lastModified).toLocaleString()}<br />

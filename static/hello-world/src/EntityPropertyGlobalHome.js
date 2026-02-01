@@ -119,14 +119,14 @@ export function EntityPropertyGlobalHome() {
         </Button>
         
         {systemStatus?.user?.isAdmin && (
-          <p style={{ marginTop: '15px', fontSize: '14px', color: '#666' }}>
+          <p style={{ marginTop: '15px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
             <InfoIcon label="Info" size="small" /> <strong>Admin Settings:</strong> Configure global defaults in 
             <strong> Jira Settings → Apps → Entity Property Tool Settings</strong>
           </p>
         )}
         
         {!systemStatus?.user?.isAdmin && systemStatus && (
-          <p style={{ marginTop: '15px', fontSize: '14px', color: '#666' }}>
+          <p style={{ marginTop: '15px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
             <InfoIcon label="Info" size="small" /> Admin settings are managed by your Jira administrator.
           </p>
         )}
@@ -182,7 +182,7 @@ export function EntityPropertyGlobalHome() {
             <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
               Technical Details
             </summary>
-            <div style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
+            <div style={{ marginTop: '10px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
               <p><strong>How it works:</strong></p>
               <ul>
                 <li>Issue panels and project pages are controlled by display conditions</li>

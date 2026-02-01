@@ -187,17 +187,17 @@ export function UserPreferences() {
         <div style={{ 
           marginBottom: '30px', 
           padding: '15px', 
-          backgroundColor: effectiveSetting.enabled ? '#e3fcef' : '#ffebe6', 
+          backgroundColor: effectiveSetting.enabled ? 'var(--success-background)' : 'var(--error-background)', 
           borderRadius: '4px',
-          border: `2px solid ${effectiveSetting.enabled ? '#00875A' : '#DE350B'}`
+          border: `2px solid ${effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)'}`
         }}>
-          <h4 style={{ margin: 0, marginBottom: '8px', color: effectiveSetting.enabled ? '#00875A' : '#DE350B' }}>
+          <h4 style={{ margin: 0, marginBottom: '8px', color: effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)' }}>
             <SuccessIcon label="Current Setting" size="small" /> Current Effective Setting
           </h4>
           <p style={{ margin: 0, marginBottom: '8px' }}>
             <strong>Entity property tools are currently {effectiveSetting.enabled ? 'ENABLED' : 'DISABLED'} for you</strong>
           </p>
-          <p style={{ margin: 0, fontSize: '14px', color: '#666' }}>
+          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-color-secondary)' }}>
             Source: {effectiveSetting.source === 'user' ? 'Your personal preference' : 
                      effectiveSetting.source === 'admin' ? 'Administrator default' : 
                      'System fallback'}
@@ -205,7 +205,7 @@ export function UserPreferences() {
         </div>
       )}
       
-      <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
+      <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
         <h4 style={{ margin: 0, marginBottom: '8px' }}>
           <InfoIcon label="Info" size="small" /> How Preferences Work
         </h4>
@@ -214,13 +214,13 @@ export function UserPreferences() {
           <li><strong>Always show:</strong> You'll always see the entity property tools, regardless of admin settings</li>
           <li><strong>Always hide:</strong> You'll never see the entity property tools, regardless of admin settings</li>
         </ul>
-        <p style={{ margin: '10px 0 0 0', fontSize: '14px', color: '#666' }}>
+        <p style={{ margin: '10px 0 0 0', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
           Note: This only affects issue panels and project pages. Global pages (like this preferences page) are always accessible.
         </p>
       </div>
       
       {userPref?.lastModified && (
-        <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#e3fcef', borderRadius: '4px' }}>
+        <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
           <h4 style={{ margin: 0, marginBottom: '8px' }}>Last Updated</h4>
           <p style={{ margin: 0 }}>
             {new Date(userPref.lastModified).toLocaleString()}

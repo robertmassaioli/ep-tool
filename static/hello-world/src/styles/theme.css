@@ -1,0 +1,121 @@
+/* Light theme (default) */
+:root {
+  /* Background colors */
+  --background-color: #ffffff;
+  --surface-color: #f4f5f7;
+  --elevated-surface: #ffffff;
+  
+  /* Text colors */
+  --text-color: #172b4d;
+  --text-color-secondary: #5e6c84;
+  --text-color-subtle: #6b778c;
+  
+  /* Border and divider colors */
+  --border-color: #dfe1e6;
+  --border-color-bold: #c1c7d0;
+  
+  /* Interactive colors */
+  --accent-color: #0052cc;
+  --accent-color-hover: #0065ff;
+  --link-color: #0052cc;
+  --link-color-hover: #0065ff;
+  
+  /* Status colors */
+  --success-color: #00875a;
+  --success-background: #e3fcef;
+  --warning-color: #de350b;
+  --warning-background: #ffebe6;
+  --error-color: #de350b;
+  --error-background: #ffebe6;
+  
+  /* Atlaskit overrides for consistency */
+  --atlaskit-banner-success: #e3fcef;
+  --atlaskit-banner-warning: #fff4e6;
+  --atlaskit-banner-error: #ffebe6;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  /* Background colors */
+  --background-color: #1d2125;
+  --surface-color: #282e33;
+  --elevated-surface: #2c333a;
+  
+  /* Text colors */
+  --text-color: #b3d4ff;
+  --text-color-secondary: #8590a2;
+  --text-color-subtle: #738496;
+  
+  /* Border and divider colors */
+  --border-color: #a1bdd914;
+  --border-color-bold: #454f59;
+  
+  /* Interactive colors */
+  --accent-color: #579dff;
+  --accent-color-hover: #85b8ff;
+  --link-color: #579dff;
+  --link-color-hover: #85b8ff;
+  
+  /* Status colors */
+  --success-color: #4bce97;
+  --success-background: #1f2d2b;
+  --warning-color: #f87462;
+  --warning-background: #2d2017;
+  --error-color: #f87462;
+  --error-background: #2d2017;
+  
+  /* Atlaskit overrides for dark mode */
+  --atlaskit-banner-success: #1f2d2b;
+  --atlaskit-banner-warning: #2d2017;
+  --atlaskit-banner-error: #2d2017;
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Apply theme variables to common elements */
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Generic utility classes */
+.theme-surface {
+  background-color: var(--surface-color);
+  color: var(--text-color);
+}
+
+.theme-elevated {
+  background-color: var(--elevated-surface);
+  color: var(--text-color);
+}
+
+.theme-border {
+  border-color: var(--border-color);
+}
+
+.theme-text-secondary {
+  color: var(--text-color-secondary);
+}
+
+.theme-text-subtle {
+  color: var(--text-color-subtle);
+}
+
+/* Status utility classes */
+.theme-success {
+  color: var(--success-color);
+  background-color: var(--success-background);
+}
+
+.theme-warning {
+  color: var(--warning-color);
+  background-color: var(--warning-background);
+}
+
+.theme-error {
+  color: var(--error-color);
+  background-color: var(--error-background);
+}
