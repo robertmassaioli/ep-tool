@@ -110,29 +110,24 @@ export function EntityPropertyGlobalHome() {
         <h3>Settings & Preferences</h3>
         <p>Manage visibility and access to entity property tools:</p>
         
-        <ButtonGroup>
-          <Button
-            appearance="primary"
-            iconBefore={<PersonIcon />}
-            onClick={() => history.push('/user-preferences')}
-          >
-            My Preferences
-          </Button>
-          
-          {systemStatus?.user?.isAdmin && (
-            <Button
-              appearance="default"
-              iconBefore={<SettingsIcon />}
-              onClick={() => history.push('/admin-settings')}
-            >
-              Admin Settings
-            </Button>
-          )}
-        </ButtonGroup>
+        <Button
+          appearance="primary"
+          iconBefore={<PersonIcon />}
+          onClick={() => history.push('/user-preferences')}
+        >
+          My Preferences
+        </Button>
+        
+        {systemStatus?.user?.isAdmin && (
+          <p style={{ marginTop: '15px', fontSize: '14px', color: '#666' }}>
+            <InfoIcon label="Info" size="small" /> <strong>Admin Settings:</strong> Configure global defaults in 
+            <strong> Jira Settings → Apps → Entity Property Tool Settings</strong>
+          </p>
+        )}
         
         {!systemStatus?.user?.isAdmin && systemStatus && (
-          <p style={{ marginTop: '10px', fontSize: '14px', color: '#666' }}>
-            <InfoIcon label="Info" size="small" /> You don't have administrator permissions to access global settings.
+          <p style={{ marginTop: '15px', fontSize: '14px', color: '#666' }}>
+            <InfoIcon label="Info" size="small" /> Admin settings are managed by your Jira administrator.
           </p>
         )}
       </div>

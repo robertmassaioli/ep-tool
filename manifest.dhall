@@ -57,7 +57,6 @@ in { app =
         , { route = "workflow-transitions"
           , title = "Workflow Transition entity properties"
           }
-        , { route = "admin-settings", title = "Admin Settings" }
         , { route = "user-preferences", title = "User Preferences" }
         ]
       , resolver.function = "resolver"
@@ -81,6 +80,14 @@ in { app =
       , resource = "main"
       , title = "Entity properties"
       , conditions = entityPropertyDisplayConditions
+      }
+    ]
+  , `jira:adminPage` =
+    [ { icon = "resource:main;entity-properties-icon.svg"
+      , key = "entity-properties-admin"
+      , resolver.function = "resolver"
+      , resource = "main"
+      , title = "Entity Property Tool Settings"
       }
     ]
   }
