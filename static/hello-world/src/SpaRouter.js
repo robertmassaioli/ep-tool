@@ -49,36 +49,12 @@ export function SpaRouter (props) {
     });
   }, []);
 
-  const [historyState, setHistoryState] = useState(null);
-
-  useEffect(() => {
-    if (!historyState && history) {
-      setHistoryState({
-        action: history.action,
-        location: history.location
-      });
-    }
-  }, [history, historyState]);
-
-  useEffect(() => {
-    if (history) {
-      history.listen((location, action) => {
-        setHistoryState({
-          action,
-          location
-        });
-      });
-    }
-  }, [history]);
-
   return (
     <div>
-      {history && historyState
+      {history
         ? (
           <Router
-            navigator={history}
-            navigationType={historyState.action}
-            location={historyState.location}
+            history={history}
           >
             {props.children}
           </Router>
