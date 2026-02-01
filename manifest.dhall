@@ -1,12 +1,66 @@
-let -- For now, simplify to just user preference check
-    -- TODO: Add proper admin default logic once Dhall types work
-    entityPropertyDisplayConditions = {
-      entity_property = { 
-        entity = "user", 
-        propertyKey = "entity-properties-user-preference", 
-        objectName = "enabled", 
-        value = "true" 
-      }
+let -- Define the specific record types we need
+    EntityPropertyRecord = { entity : Text, propertyKey : Text, objectName : Text, value : Text }
+in let AppPropertyRecord = { propertyKey : Text, objectName : Text, value : Text }
+
+-- Define the condition leaf types
+in let EntityPropertyCondition = { entity_property : EntityPropertyRecord }
+in let AppPropertyCondition = { app_property : AppPropertyRecord }
+
+-- Define the specific nested structure we need
+in let NotEntityPropertyCondition = { not : EntityPropertyCondition }
+
+-- Define our specific AND condition structure
+in let AndConditionForOurUseCase = 
+    { and : List (< NotEntityProperty : NotEntityPropertyCondition | AppProperty : AppPropertyCondition >) }
+
+-- Define our specific OR condition structure  
+in let OrConditionForOurUseCase = 
+    { or : List (< EntityProperty : EntityPropertyCondition | AndCondition : AndConditionForOurUseCase >) }
+
+in let entityPropertyDisplayConditions : OrConditionForOurUseCase = {
+      or = [
+        -- User explicitly enabled
+        (< EntityProperty : EntityPropertyCondition | AndCondition : AndConditionForOurUseCase >).EntityProperty {
+          entity_property = { 
+            entity = "user", 
+            propertyKey = "entity-properties-user-preference", 
+            objectName = "enabled", 
+            value = "true" 
+          }
+        },
+        -- No user preference AND admin enabled
+        (< EntityProperty : EntityPropertyCondition | AndCondition : AndConditionForOurUseCase >).AndCondition {
+          and = [
+            (< NotEntityProperty : NotEntityPropertyCondition | AppProperty : AppPropertyCondition >).NotEntityProperty {
+              not = {
+                entity_property = { 
+                  entity = "user", 
+                  propertyKey = "entity-properties-user-preference", 
+                  objectName = "enabled", 
+                  value = "true" 
+                }
+              }
+            },
+            (< NotEntityProperty : NotEntityPropertyCondition | AppProperty : AppPropertyCondition >).NotEntityProperty {
+              not = {
+                entity_property = { 
+                  entity = "user", 
+                  propertyKey = "entity-properties-user-preference", 
+                  objectName = "enabled", 
+                  value = "false" 
+                }
+              }
+            },
+            (< NotEntityProperty : NotEntityPropertyCondition | AppProperty : AppPropertyCondition >).AppProperty {
+              app_property = { 
+                propertyKey = "entity-properties-admin-config", 
+                objectName = "defaultEnabled", 
+                value = "true" 
+              }
+            }
+          ]
+        }
+      ]
     }
 
 in { app =
@@ -58,7 +112,7 @@ in { app =
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity Property Tool Settings"
-      , useConfigPage = True
+      , useAsConfig = True
       }
     ]
   }
