@@ -3,7 +3,7 @@ import { invoke } from '@forge/bridge';
 import Button from '@atlaskit/button/standard-button';
 import { RadioGroup } from '@atlaskit/radio';
 import Spinner from '@atlaskit/spinner';
-import { Banner } from '@atlaskit/banner';
+import Banner from '@atlaskit/banner';
 import { Code } from '@atlaskit/code';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
