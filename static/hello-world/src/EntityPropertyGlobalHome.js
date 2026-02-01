@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { invoke } from '@forge/bridge';
-import { useNavigate } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Button, { ButtonGroup } from '@atlaskit/button/standard-button';
 import Spinner from '@atlaskit/spinner';
 import Banner from '@atlaskit/banner';
@@ -11,7 +11,7 @@ import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 
 export function EntityPropertyGlobalHome() {
-  const navigate = useNavigate();
+  const history = useHistory();
   const [effectiveSetting, setEffectiveSetting] = useState(null);
   const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -113,7 +113,7 @@ export function EntityPropertyGlobalHome() {
         <Button
           appearance="primary"
           iconBefore={<PersonIcon />}
-          onClick={() => navigate('/user-preferences')}
+          onClick={() => history.push('/user-preferences')}
         >
           My Preferences
         </Button>
@@ -140,7 +140,7 @@ export function EntityPropertyGlobalHome() {
           <li>
             <Button
               appearance="link"
-              onClick={() => navigate('/user')}
+              onClick={() => history.push('/user')}
               spacing="none"
             >
               User entity properties
@@ -149,7 +149,7 @@ export function EntityPropertyGlobalHome() {
           <li>
             <Button
               appearance="link"
-              onClick={() => navigate('/issue-type')}
+              onClick={() => history.push('/issue-type')}
               spacing="none"
             >
               Issue Type entity properties
@@ -158,7 +158,7 @@ export function EntityPropertyGlobalHome() {
           <li>
             <Button
               appearance="link"
-              onClick={() => navigate('/dashboard-items')}
+              onClick={() => history.push('/dashboard-items')}
               spacing="none"
             >
               Dashboard Item entity properties
@@ -167,7 +167,7 @@ export function EntityPropertyGlobalHome() {
           <li>
             <Button
               appearance="link"
-              onClick={() => navigate('/workflow-transitions')}
+              onClick={() => history.push('/workflow-transitions')}
               spacing="none"
             >
               Workflow Transition entity properties
