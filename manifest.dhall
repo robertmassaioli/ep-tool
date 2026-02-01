@@ -4,7 +4,7 @@ in let LeafCondition = { condition : Text, params : ConditionParams }
 in let BranchCondition = { condition : Text, conditions : List LeafCondition }
 in let TopCondition = { condition : Text, conditions : List BranchCondition }
 in let -- Shared display conditions for entity property modules
-      entityPropertyDisplayConditions = 
+      entityPropertyDisplayConditions =
       [ { condition = "or"
         , conditions =
           [ { condition = "and"
@@ -39,8 +39,7 @@ in let -- Shared display conditions for entity property modules
       ]
 
 in { app =
-  { features.autoUserConsent = True
-  , id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
+  { id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
   , runtime.name = "nodejs20.x"
   }
 , modules =
@@ -88,6 +87,7 @@ in { app =
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity Property Tool Settings"
+      , useConfigPage = True
       }
     ]
   }
