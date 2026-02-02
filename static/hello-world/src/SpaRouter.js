@@ -44,7 +44,7 @@ export function SpaRouter (props) {
       try {
         // Use Forge's view.createHistory() as recommended
         const history = await view.createHistory();
-        console.log("Setting new history", history);
+        console.log('Setting new history', history);
         setNavigator(history);
 
         // Set initial values from the history object
@@ -71,7 +71,7 @@ export function SpaRouter (props) {
         const fallbackHistory = createMemoryHistory({
           initialEntries: [convertContextToRoute(context)]
         });
-        
+
         setNavigator(fallbackHistory);
         setHistoryState({
           action: fallbackHistory.action,
@@ -85,7 +85,7 @@ export function SpaRouter (props) {
             location,
           });
         });
-        
+
         historyCleanupRef.current = unsubscribe;
       }
     })();

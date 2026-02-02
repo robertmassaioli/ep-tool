@@ -31,6 +31,10 @@
     "ts-is-present": "^1.2.2"
   },
   "devDependencies": {
+    "@atlaskit/eslint-plugin-design-system": "^13.36.2",
+    "eslint": "^9.39.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
     "react-scripts": "^5.0.1",
     "semistandard": "^17.0.0"
   },
@@ -38,8 +42,8 @@
     "start": "BROWSER=none HOST=::1 PORT=3001 react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "lint": "semistandard",
-    "lint:fix": "semistandard --fix"
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix"
   },
   "resolutions": {
     "styled-components": "^6"

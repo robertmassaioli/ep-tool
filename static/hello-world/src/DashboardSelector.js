@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import React, { useState } from 'react';
 import { requestJira } from '@forge/bridge';
 import Select, { AsyncSelect } from '@atlaskit/select';
@@ -10,7 +11,7 @@ import { getDashboardItemPropertyApi } from './apis/dashboard-item';
 import { SelectZIndexFix } from './SelectZIndexFix';
 
 const AppContainer = styled.div`
-  margin-top: 16px;
+  margin-top: ${token('space.200')};
 `;
 
 const LoadingIndicator = (props) => {

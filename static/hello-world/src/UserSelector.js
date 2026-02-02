@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import React, { useState } from 'react';
 import { requestJira } from '@forge/bridge';
 import { useEffectAsync } from './useEffectAsync';
@@ -12,7 +13,7 @@ import { useViewContext } from './ViewContext';
 import { SelectZIndexFix } from './SelectZIndexFix';
 
 const AppContainer = styled.div`
-  margin-top: 16px;
+  margin-top: ${token('space.200')};
 `;
 
 const LoadingIndicator = (props) => {

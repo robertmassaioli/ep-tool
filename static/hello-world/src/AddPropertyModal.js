@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import React from 'react';
 import Button, { ButtonGroup, LoadingButton } from '@atlaskit/button';
 import { view } from '@forge/bridge';
@@ -26,7 +27,7 @@ const Container = styled.div`
   width: calc(100vw - 48px);
   max-width: 100%;
   margin: 0 auto;
-  padding-top: 24px;
+  padding-top: ${token('space.300')};
 `;
 
 export const TYPE_CREATE = 'add-property-create';
@@ -140,7 +141,7 @@ export const AddPropertyModal = (props) => {
                         {valid && meta.dirty
                           ? (
                             <ValidMessage>JSON valid!</ValidMessage>
-                            )
+                          )
                           : null}
                       </>
                     );

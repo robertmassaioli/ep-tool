@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import React, { useState, useEffect } from 'react';
 import { invoke } from '@forge/bridge';
 import Button, { ButtonGroup } from '@atlaskit/button/standard-button';
@@ -25,14 +26,14 @@ export function AdminSettings() {
   async function loadAdminData() {
     setLoading(true);
     setError(null);
-    
+
     try {
       // Get system status which includes admin check
       const status = await invoke('getSystemStatus');
       setSystemStatus(status);
       setIsAdmin(status.user.isAdmin);
       setAdminConfig(status.adminConfig);
-      
+
       if (!status.user.isAdmin) {
         setError('You need administrator permissions to access these settings.');
       }
@@ -50,14 +51,14 @@ export function AdminSettings() {
     setSaving(true);
     setError(null);
     setSuccess(null);
-    
+
     try {
       const result = await invoke('setAdminConfig', { defaultEnabled: newValue });
-      
+
       if (result.success) {
         setAdminConfig(result.config);
         setSuccess(`Successfully ${newValue ? 'enabled' : 'disabled'} entity property tools by default for all users.`);
-        
+
         // Refresh system status to get updated data
         const updatedStatus = await invoke('getSystemStatus');
         setSystemStatus(updatedStatus);
@@ -85,7 +86,7 @@ export function AdminSettings() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px' }}>
+      <div style={{ textAlign: 'center', padding: token('space.500') }}>
         <Spinner size="large" />
         <p>Loading admin settings...</p>
       </div>
@@ -100,12 +101,12 @@ export function AdminSettings() {
           icon={<WarningIcon label="Warning" />}
           appearance="warning"
         >
-          You need administrator permissions to access these settings. 
+          You need administrator permissions to access these settings.
           Please contact your Jira administrator if you believe you should have access.
         </Banner>
-        
+
         {systemStatus && (
-          <div style={{ marginTop: '20px' }}>
+          <div style={{ marginTop: token('space.250') }}>
             <h3>Current User Information</h3>
             <Code language="json">
               {JSON.stringify({
@@ -124,7 +125,7 @@ export function AdminSettings() {
     <div>
       <h2>Admin Settings</h2>
       <p>Control the default visibility of entity property tools for all users across this Jira instance.</p>
-      
+
       {error && (
         <Banner
           icon={<WarningIcon label="Error" />}
@@ -133,7 +134,7 @@ export function AdminSettings() {
           {error}
         </Banner>
       )}
-      
+
       {success && (
         <Banner
           icon={<SuccessIcon label="Success" />}
@@ -142,10 +143,10 @@ export function AdminSettings() {
           {success}
         </Banner>
       )}
-      
-      <div style={{ marginTop: '20px', marginBottom: '30px' }}>
+
+      <div style={{ marginTop: token('space.250'), marginBottom: '30px' }}>
         <h3>Default Setting for All Users</h3>
-        
+
         <Checkbox
           isChecked={adminConfig?.defaultEnabled || false}
           onChange={handleToggleChange}
@@ -161,50 +162,50 @@ export function AdminSettings() {
             </span>
           }
         />
-        
+
         {saving && (
           <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center' }}>
             <Spinner size="small" />
-            <span style={{ marginLeft: '8px' }}>Updating settings...</span>
+            <span style={{ marginLeft: token('space.100') }}>Updating settings...</span>
           </div>
         )}
       </div>
-      
+
       <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-        <h4 style={{ margin: 0, marginBottom: '8px' }}>
+        <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> Important Notes
         </h4>
-        <ul style={{ margin: 0, paddingLeft: '20px' }}>
+        <ul style={{ margin: 0, paddingLeft: token('space.250') }}>
           <li>This setting controls visibility of issue panels and project pages</li>
           <li>Global pages (like this admin interface) remain visible to all users</li>
           <li>Individual users can override this setting in their personal preferences</li>
           <li>Changes take effect immediately for all users</li>
         </ul>
       </div>
-      
+
       {adminConfig?.lastModified && (
-        <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-          <h4 style={{ margin: 0, marginBottom: '8px' }}>Last Modified</h4>
+        <div style={{ marginBottom: token('space.250'), padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+          <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Modified</h4>
           <p style={{ margin: 0 }}>
             <strong>When:</strong> {new Date(adminConfig.lastModified).toLocaleString()}<br />
             <strong>By:</strong> {adminConfig.modifiedByDisplayName || adminConfig.modifiedBy}
           </p>
         </div>
       )}
-      
+
       {systemStatus && (
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
             <h3>System Status</h3>
-            <Button 
-              appearance="subtle" 
+            <Button
+              appearance="subtle"
               onClick={refreshStatus}
               spacing="compact"
             >
               Refresh
             </Button>
           </div>
-          
+
           <Code language="json">
             {JSON.stringify(systemStatus, null, 2)}
           </Code>

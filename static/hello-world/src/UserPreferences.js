@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import React, { useState, useEffect } from 'react';
 import { invoke } from '@forge/bridge';
 import Button from '@atlaskit/button/standard-button';
@@ -26,13 +27,13 @@ export function UserPreferences() {
   async function loadSettings() {
     setLoading(true);
     setError(null);
-    
+
     try {
       const [status, effective] = await Promise.all([
         invoke('getSystemStatus'),
         invoke('getEffectiveSetting')
       ]);
-      
+
       setSystemStatus(status);
       setUserPref(status.userPreference);
       setAdminConfig(status.adminConfig);
@@ -48,45 +49,45 @@ export function UserPreferences() {
   async function handlePreferenceChange(event) {
     const selectedValue = event.target.value;
     let enabledValue;
-    
+
     switch (selectedValue) {
-      case 'default':
-        enabledValue = null; // Use admin default
-        break;
-      case 'enabled':
-        enabledValue = true; // Always enabled
-        break;
-      case 'disabled':
-        enabledValue = false; // Always disabled
-        break;
-      default:
-        return;
+    case 'default':
+      enabledValue = null; // Use admin default
+      break;
+    case 'enabled':
+      enabledValue = true; // Always enabled
+      break;
+    case 'disabled':
+      enabledValue = false; // Always disabled
+      break;
+    default:
+      return;
     }
-    
+
     setSaving(true);
     setError(null);
     setSuccess(null);
-    
+
     try {
       const result = await invoke('setUserPreference', { enabled: enabledValue });
-      
+
       if (result.success) {
         // Reload settings to get updated effective setting
         await loadSettings();
-        
+
         let message;
         switch (result.action) {
-          case 'deleted':
-            message = 'Your preference has been cleared. You will now use the admin default setting.';
-            break;
-          case 'set':
-            message = `Your preference has been set to ${enabledValue ? 'always enabled' : 'always disabled'}.`;
-            break;
-          case 'none':
-            message = 'No changes were needed - you are already using the admin default.';
-            break;
-          default:
-            message = 'Your preference has been updated successfully.';
+        case 'deleted':
+          message = 'Your preference has been cleared. You will now use the admin default setting.';
+          break;
+        case 'set':
+          message = `Your preference has been set to ${enabledValue ? 'always enabled' : 'always disabled'}.`;
+          break;
+        case 'none':
+          message = 'No changes were needed - you are already using the admin default.';
+          break;
+        default:
+          message = 'Your preference has been updated successfully.';
         }
         setSuccess(message);
       } else {
@@ -114,7 +115,7 @@ export function UserPreferences() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px' }}>
+      <div style={{ textAlign: 'center', padding: token('space.500') }}>
         <Spinner size="large" />
         <p>Loading your preferences...</p>
       </div>
@@ -146,7 +147,7 @@ export function UserPreferences() {
     <div>
       <h2>Your Entity Property Tool Preferences</h2>
       <p>Choose when you want to see entity property tools in Jira. Your personal preference will override the administrator's default setting.</p>
-      
+
       {error && (
         <Banner
           icon={<WarningIcon label="Error" />}
@@ -155,7 +156,7 @@ export function UserPreferences() {
           {error}
         </Banner>
       )}
-      
+
       {success && (
         <Banner
           icon={<SuccessIcon label="Success" />}
@@ -164,52 +165,52 @@ export function UserPreferences() {
           {success}
         </Banner>
       )}
-      
-      <div style={{ marginTop: '20px', marginBottom: '30px' }}>
+
+      <div style={{ marginTop: token('space.250'), marginBottom: '30px' }}>
         <h3>Preference Setting</h3>
-        
+
         <RadioGroup
           options={options}
           value={currentValue}
           onChange={handlePreferenceChange}
           isDisabled={saving}
         />
-        
+
         {saving && (
           <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
             <Spinner size="small" />
-            <span style={{ marginLeft: '8px' }}>Updating your preference...</span>
+            <span style={{ marginLeft: token('space.100') }}>Updating your preference...</span>
           </div>
         )}
       </div>
-      
+
       {effectiveSetting && (
-        <div style={{ 
-          marginBottom: '30px', 
-          padding: '15px', 
-          backgroundColor: effectiveSetting.enabled ? 'var(--success-background)' : 'var(--error-background)', 
+        <div style={{
+          marginBottom: '30px',
+          padding: '15px',
+          backgroundColor: effectiveSetting.enabled ? 'var(--success-background)' : 'var(--error-background)',
           borderRadius: '4px',
           border: `2px solid ${effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)'}`
         }}>
-          <h4 style={{ margin: 0, marginBottom: '8px', color: effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)' }}>
+          <h4 style={{ margin: 0, marginBottom: token('space.100'), color: effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)' }}>
             <SuccessIcon label="Current Setting" size="small" /> Current Effective Setting
           </h4>
-          <p style={{ margin: 0, marginBottom: '8px' }}>
+          <p style={{ margin: 0, marginBottom: token('space.100') }}>
             <strong>Entity property tools are currently {effectiveSetting.enabled ? 'ENABLED' : 'DISABLED'} for you</strong>
           </p>
           <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-color-secondary)' }}>
-            Source: {effectiveSetting.source === 'user' ? 'Your personal preference' : 
-                     effectiveSetting.source === 'admin' ? 'Administrator default' : 
-                     'System fallback'}
+            Source: {effectiveSetting.source === 'user' ? 'Your personal preference' :
+              effectiveSetting.source === 'admin' ? 'Administrator default' :
+                'System fallback'}
           </p>
         </div>
       )}
-      
+
       <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-        <h4 style={{ margin: 0, marginBottom: '8px' }}>
+        <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> How Preferences Work
         </h4>
-        <ul style={{ margin: 0, paddingLeft: '20px' }}>
+        <ul style={{ margin: 0, paddingLeft: token('space.250') }}>
           <li><strong>Use admin default:</strong> Your setting will follow whatever the administrator has configured for all users</li>
           <li><strong>Always show:</strong> You'll always see the entity property tools, regardless of admin settings</li>
           <li><strong>Always hide:</strong> You'll never see the entity property tools, regardless of admin settings</li>
@@ -218,18 +219,18 @@ export function UserPreferences() {
           Note: This only affects issue panels and project pages. Global pages (like this preferences page) are always accessible.
         </p>
       </div>
-      
+
       {userPref?.lastModified && (
-        <div style={{ marginBottom: '20px', padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
-          <h4 style={{ margin: 0, marginBottom: '8px' }}>Last Updated</h4>
+        <div style={{ marginBottom: token('space.250'), padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+          <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Updated</h4>
           <p style={{ margin: 0 }}>
             {new Date(userPref.lastModified).toLocaleString()}
           </p>
         </div>
       )}
-      
+
       <div>
-        <details style={{ marginTop: '20px' }}>
+        <details style={{ marginTop: token('space.250') }}>
           <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug Information</summary>
           <div style={{ marginTop: '10px' }}>
             <h4>Current Status</h4>

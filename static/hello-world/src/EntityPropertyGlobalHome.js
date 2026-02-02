@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import React, { useState, useEffect } from 'react';
 import { invoke } from '@forge/bridge';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +28,7 @@ export function EntityPropertyGlobalHome() {
         invoke('getEffectiveSetting'),
         invoke('getSystemStatus')
       ]);
-      
+
       setEffectiveSetting(effective);
       setSystemStatus(status);
       setError(null);
@@ -41,7 +42,7 @@ export function EntityPropertyGlobalHome() {
 
   function getStatusMessage() {
     if (!effectiveSetting) return null;
-    
+
     if (effectiveSetting.enabled) {
       return {
         type: 'success',
@@ -63,14 +64,14 @@ export function EntityPropertyGlobalHome() {
       <p>
         A tool for App Developers to manage Entity Properties on JIRA entities.
       </p>
-      
+
       {loading && (
-        <div style={{ margin: '20px 0', textAlign: 'center' }}>
+        <div style={{ margin: `${token('space.250')} 0`, textAlign: 'center' }}>
           <Spinner size="small" />
-          <span style={{ marginLeft: '8px' }}>Loading status...</span>
+          <span style={{ marginLeft: token('space.100') }}>Loading status...</span>
         </div>
       )}
-      
+
       {error && (
         <Banner
           icon={<InfoIcon label="Info" />}
@@ -79,9 +80,9 @@ export function EntityPropertyGlobalHome() {
           {error}
         </Banner>
       )}
-      
+
       {effectiveSetting && !loading && (
-        <div style={{ margin: '20px 0' }}>
+        <div style={{ margin: `${token('space.250')} 0` }}>
           {(() => {
             const status = getStatusMessage();
             return (
@@ -91,12 +92,12 @@ export function EntityPropertyGlobalHome() {
               >
                 {status.message}
                 {effectiveSetting.source === 'user' && (
-                  <span style={{ marginLeft: '8px' }}>
+                  <span style={{ marginLeft: token('space.100') }}>
                     (You can change this in your preferences)
                   </span>
                 )}
                 {effectiveSetting.source === 'admin' && (
-                  <span style={{ marginLeft: '8px' }}>
+                  <span style={{ marginLeft: token('space.100') }}>
                     (You can override this in your preferences)
                   </span>
                 )}
@@ -109,7 +110,7 @@ export function EntityPropertyGlobalHome() {
       <div style={{ marginBottom: '30px' }}>
         <h3>Settings & Preferences</h3>
         <p>Manage visibility and access to entity property tools:</p>
-        
+
         <Button
           appearance="primary"
           iconBefore={<PersonIcon />}
@@ -117,14 +118,14 @@ export function EntityPropertyGlobalHome() {
         >
           My Preferences
         </Button>
-        
+
         {systemStatus?.user?.isAdmin && (
           <p style={{ marginTop: '15px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
-            <InfoIcon label="Info" size="small" /> <strong>Admin Settings:</strong> Configure global defaults in 
+            <InfoIcon label="Info" size="small" /> <strong>Admin Settings:</strong> Configure global defaults in
             <strong> Jira Settings → Apps → Entity Property Tool Settings</strong>
           </p>
         )}
-        
+
         {!systemStatus?.user?.isAdmin && systemStatus && (
           <p style={{ marginTop: '15px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
             <InfoIcon label="Info" size="small" /> Admin settings are managed by your Jira administrator.
@@ -177,7 +178,7 @@ export function EntityPropertyGlobalHome() {
       </div>
 
       {effectiveSetting && (
-        <div style={{ marginTop: '40px' }}>
+        <div style={{ marginTop: token('space.500') }}>
           <details>
             <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
               Technical Details
@@ -190,9 +191,9 @@ export function EntityPropertyGlobalHome() {
                 <li>Global pages (like this one) are always accessible for configuration</li>
                 <li>Changes take effect immediately across all Jira projects</li>
               </ul>
-              
+
               <p style={{ marginTop: '15px' }}>
-                <strong>Current effective setting:</strong> {effectiveSetting.enabled ? 'Enabled' : 'Disabled'} 
+                <strong>Current effective setting:</strong> {effectiveSetting.enabled ? 'Enabled' : 'Disabled'}
                 (source: {effectiveSetting.source})
               </p>
             </div>

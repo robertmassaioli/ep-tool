@@ -11,8 +11,8 @@ import { isPresent } from 'ts-is-present';
 
 const PropertyHeading = styled.h2`
     margin: 0;
-    padding: 16px 0 8px 0;
-    color: ${token('color.text', '#172B4D')};
+    padding: ${token('space.200')} 0 ${token('space.100')} 0;
+    color: ${token('color.text')};
 `;
 
 const PropertyLoadingDiv = styled.div`
@@ -24,7 +24,7 @@ const PropertyLoadingDiv = styled.div`
 const PropertyHeaderContainer = styled.div`
     display: flex;
     align-items: baseline;
-    margin: 0 0 8px 0;
+    margin: 0 0 ${token('space.100')} 0;
 `;
 
 const PropertyHeaderName = styled.div`
@@ -32,7 +32,7 @@ const PropertyHeaderName = styled.div`
 
 const PropertyHeaderStatus = styled.div`
     flex-grow: 1;
-    padding: 0 0 0 16px;
+    padding: 0 0 0 ${token('space.200')};
 `;
 
 const PropertyHeaderActions = styled.div`
