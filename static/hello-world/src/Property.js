@@ -5,12 +5,14 @@ import { debounce } from 'throttle-debounce';
 import EditorRemoveIcon from '@atlaskit/icon/glyph/editor/remove';
 import Lozenge from '@atlaskit/lozenge';
 import Button from '@atlaskit/button';
+import { token } from '@atlaskit/tokens';
 import { useEffectAsync } from './useEffectAsync';
 import { isPresent } from 'ts-is-present';
 
 const PropertyHeading = styled.h2`
     margin: 0;
     padding: 16px 0 8px 0;
+    color: ${token('color.text', '#172B4D')};
 `;
 
 const PropertyLoadingDiv = styled.div`
