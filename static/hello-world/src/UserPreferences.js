@@ -166,7 +166,7 @@ export function UserPreferences() {
         </Banner>
       )}
 
-      <div style={{ marginTop: token('space.250'), marginBottom: '30px' }}>
+      <div style={{ marginTop: token('space.250'), marginBottom: token('space.400') }}>
         <h3>Preference Setting</h3>
 
         <RadioGroup
@@ -186,8 +186,8 @@ export function UserPreferences() {
 
       {effectiveSetting && (
         <div style={{
-          marginBottom: '30px',
-          padding: '15px',
+          marginBottom: token('space.400'),
+          padding: token('space.200'),
           backgroundColor: effectiveSetting.enabled ? 'var(--success-background)' : 'var(--error-background)',
           borderRadius: '4px',
           border: `2px solid ${effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)'}`
@@ -206,7 +206,7 @@ export function UserPreferences() {
         </div>
       )}
 
-      <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
         <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> How Preferences Work
         </h4>
@@ -215,13 +215,13 @@ export function UserPreferences() {
           <li><strong>Always show:</strong> You'll always see the entity property tools, regardless of admin settings</li>
           <li><strong>Always hide:</strong> You'll never see the entity property tools, regardless of admin settings</li>
         </ul>
-        <p style={{ margin: '10px 0 0 0', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
+        <p style={{ margin: `${token('space.150')} 0 0 0`, fontSize: '14px', color: 'var(--text-color-secondary)' }}>
           Note: This only affects issue panels and project pages. Global pages (like this preferences page) are always accessible.
         </p>
       </div>
 
       {userPref?.lastModified && (
-        <div style={{ marginBottom: token('space.250'), padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
           <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Updated</h4>
           <p style={{ margin: 0 }}>
             {new Date(userPref.lastModified).toLocaleString()}
@@ -232,7 +232,7 @@ export function UserPreferences() {
       <div>
         <details style={{ marginTop: token('space.250') }}>
           <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug Information</summary>
-          <div style={{ marginTop: '10px' }}>
+          <div style={{ marginTop: token('space.150') }}>
             <h4>Current Status</h4>
             <Code language="json">
               {JSON.stringify({

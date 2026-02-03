@@ -107,7 +107,7 @@ export function EntityPropertyGlobalHome() {
         </div>
       )}
 
-      <div style={{ marginBottom: '30px' }}>
+      <div style={{ marginBottom: token('space.400') }}>
         <h3>Settings & Preferences</h3>
         <p>Manage visibility and access to entity property tools:</p>
 
@@ -120,14 +120,14 @@ export function EntityPropertyGlobalHome() {
         </Button>
 
         {systemStatus?.user?.isAdmin && (
-          <p style={{ marginTop: '15px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
+          <p style={{ marginTop: token('space.200'), fontSize: '14px', color: 'var(--text-color-secondary)' }}>
             <InfoIcon label="Info" size="small" /> <strong>Admin Settings:</strong> Configure global defaults in
             <strong> Jira Settings → Apps → Entity Property Tool Settings</strong>
           </p>
         )}
 
         {!systemStatus?.user?.isAdmin && systemStatus && (
-          <p style={{ marginTop: '15px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
+          <p style={{ marginTop: token('space.200'), fontSize: '14px', color: 'var(--text-color-secondary)' }}>
             <InfoIcon label="Info" size="small" /> Admin settings are managed by your Jira administrator.
           </p>
         )}
@@ -183,7 +183,7 @@ export function EntityPropertyGlobalHome() {
             <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
               Technical Details
             </summary>
-            <div style={{ marginTop: '10px', fontSize: '14px', color: 'var(--text-color-secondary)' }}>
+            <div style={{ marginTop: token('space.150'), fontSize: '14px', color: 'var(--text-color-secondary)' }}>
               <p><strong>How it works:</strong></p>
               <ul>
                 <li>Issue panels and project pages are controlled by display conditions</li>
@@ -192,7 +192,7 @@ export function EntityPropertyGlobalHome() {
                 <li>Changes take effect immediately across all Jira projects</li>
               </ul>
 
-              <p style={{ marginTop: '15px' }}>
+              <p style={{ marginTop: token('space.200') }}>
                 <strong>Current effective setting:</strong> {effectiveSetting.enabled ? 'Enabled' : 'Disabled'}
                 (source: {effectiveSetting.source})
               </p>

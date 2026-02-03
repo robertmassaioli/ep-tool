@@ -144,7 +144,7 @@ export function AdminSettings() {
         </Banner>
       )}
 
-      <div style={{ marginTop: token('space.250'), marginBottom: '30px' }}>
+      <div style={{ marginTop: token('space.250'), marginBottom: token('space.400') }}>
         <h3>Default Setting for All Users</h3>
 
         <Checkbox
@@ -164,14 +164,14 @@ export function AdminSettings() {
         />
 
         {saving && (
-          <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center' }}>
+          <div style={{ marginTop: token('space.150'), display: 'flex', alignItems: 'center' }}>
             <Spinner size="small" />
             <span style={{ marginLeft: token('space.100') }}>Updating settings...</span>
           </div>
         )}
       </div>
 
-      <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
         <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> Important Notes
         </h4>
@@ -184,7 +184,7 @@ export function AdminSettings() {
       </div>
 
       {adminConfig?.lastModified && (
-        <div style={{ marginBottom: token('space.250'), padding: '10px', backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
           <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Modified</h4>
           <p style={{ margin: 0 }}>
             <strong>When:</strong> {new Date(adminConfig.lastModified).toLocaleString()}<br />
@@ -195,7 +195,7 @@ export function AdminSettings() {
 
       {systemStatus && (
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: token('space.150') }}>
             <h3>System Status</h3>
             <Button
               appearance="subtle"
