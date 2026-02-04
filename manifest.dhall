@@ -8,7 +8,7 @@ let -- Define the proper Forge display conditions structure
           objectName = "enabled",
           value = "true"
         },
-        -- No user preference AND admin enabled
+        -- No user preference AND (admin enabled OR no admin config exists)
         and = {
           not = {
             entityPropertyExists = {
@@ -16,11 +16,21 @@ let -- Define the proper Forge display conditions structure
               propertyKey = "entity-properties-user-preference"
             }
           },
-          entityPropertyEqualTo = {
-            entity = "app",
-            propertyKey = "entity-properties-admin-config",
-            objectName = "defaultEnabled", 
-            value = "true"
+          or = {
+            -- Admin explicitly enabled
+            entityPropertyEqualTo = {
+              entity = "app",
+              propertyKey = "entity-properties-admin-config",
+              objectName = "defaultEnabled", 
+              value = "true"
+            },
+            -- No admin config exists (default to enabled)
+            not = {
+              entityPropertyExists = {
+                entity = "app", 
+                propertyKey = "entity-properties-admin-config"
+              }
+            }
           }
         }
       }

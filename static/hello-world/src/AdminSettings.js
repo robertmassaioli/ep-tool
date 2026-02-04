@@ -147,7 +147,7 @@ export function AdminSettings() {
         <h3>Default Setting for All Users</h3>
         
         <Checkbox
-          isChecked={adminConfig?.defaultEnabled || false}
+          isChecked={adminConfig?.defaultEnabled ?? true}
           onChange={handleToggleChange}
           isDisabled={saving}
           label={
