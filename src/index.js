@@ -112,6 +112,58 @@ resolver.define('setAdminConfig', async (req) => {
   }
 });
 
+resolver.define('deleteAdminConfig', async (req) => {
+  console.log('deleteAdminConfig called');
+  
+  try {
+    console.log('Checking admin permissions...');
+    // Check admin permissions
+    const isAdmin = await checkAdminPermissions();
+    console.log('Admin permission check result:', isAdmin);
+    
+    if (!isAdmin) {
+      console.log('User does not have admin permissions, throwing error');
+      throw new Error('Insufficient permissions: Admin access required');
+    }
+    
+    console.log('Getting current user...');
+    const user = await getCurrentUser();
+    console.log('Current user:', { accountId: user.accountId, displayName: user.displayName });
+    
+    console.log('Deleting admin config from app properties...');
+    // Delete from app properties
+    const response = await api.asApp().requestJira(
+      route`/rest/forge/1/app/properties/${ADMIN_CONFIG_KEY}`, {
+        method: 'DELETE'
+      }
+    );
+    console.log('App property deletion response status:', response.status);
+    
+    // Handle 404 as success (property didn't exist anyway)
+    if (response.status === 404) {
+      console.log('Admin config property did not exist, treating as successful deletion');
+      return { 
+        success: true, 
+        message: 'Admin configuration was already at default settings',
+        wasDeleted: false 
+      };
+    }
+    
+    console.log('deleteAdminConfig completed successfully');
+    return { 
+      success: true, 
+      message: 'Admin configuration deleted successfully. All users will now see entity property tools by default.',
+      wasDeleted: true,
+      deletedBy: user.displayName,
+      deletedAt: new Date().toISOString()
+    };
+  } catch (error) {
+    console.error('Error deleting admin config:', error);
+    console.error('Error stack:', error.stack);
+    throw error;
+  }
+});
+
 // Internal function to get user preference
 async function getUserPreferenceInternal({ accountId } = {}) {
   try {

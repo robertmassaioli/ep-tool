@@ -8,12 +8,14 @@ import { Code } from '@atlaskit/code';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import InfoIcon from '@atlaskit/icon/glyph/info';
+import config from './config.json';
 
 export function AdminSettings() {
   const [adminConfig, setAdminConfig] = useState(null);
   const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -69,6 +71,42 @@ export function AdminSettings() {
       setError(`Failed to update settings: ${err.message}`);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDeleteConfig() {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete the admin configuration?\n\n' +
+      'This will reset the system to default settings where entity property tools are visible to all users by default.\n\n' +
+      'Individual user preferences will remain unchanged.'
+    );
+    
+    if (!confirmed) {
+      return;
+    }
+    
+    setDeleting(true);
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      const result = await invoke('deleteAdminConfig');
+      
+      if (result.success) {
+        setSuccess(result.message);
+        
+        // Refresh system status to get updated data
+        const updatedStatus = await invoke('getSystemStatus');
+        setSystemStatus(updatedStatus);
+        setAdminConfig(updatedStatus.adminConfig);
+      } else {
+        throw new Error('Failed to delete admin configuration');
+      }
+    } catch (err) {
+      console.error('Failed to delete admin config:', err);
+      setError(`Failed to delete configuration: ${err.message}`);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -169,6 +207,35 @@ export function AdminSettings() {
           </div>
         )}
       </div>
+      
+      {config?.enableDeleteProperties && (
+        <div style={{ marginTop: '30px', marginBottom: '30px' }}>
+          <h3>Advanced Configuration</h3>
+          <div style={{ padding: '15px', backgroundColor: '#ffebe6', borderRadius: '4px', border: '1px solid #ff8f73' }}>
+            <h4 style={{ margin: 0, marginBottom: '8px', color: '#bf2600' }}>
+              <WarningIcon label="Warning" size="small" /> Reset to Default Settings
+            </h4>
+            <p style={{ margin: 0, marginBottom: '12px' }}>
+              Delete the admin configuration to restore default behavior. This will make entity property tools visible 
+              to all users by default (unless they have individual preferences set).
+            </p>
+            <Button 
+              appearance="danger"
+              onClick={handleDeleteConfig}
+              isDisabled={deleting || !adminConfig || adminConfig.source === 'default'}
+              spacing="compact"
+            >
+              {deleting && <Spinner size="small" />}
+              {deleting ? 'Deleting Configuration...' : 'Delete Admin Configuration'}
+            </Button>
+            {(adminConfig?.source === 'default') && (
+              <p style={{ margin: 0, marginTop: '8px', fontSize: '12px', color: '#666' }}>
+                Configuration is already at default settings.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
       
       <div style={{ marginBottom: '30px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '4px' }}>
         <h4 style={{ margin: 0, marginBottom: '8px' }}>
