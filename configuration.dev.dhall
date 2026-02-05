@@ -1,0 +1,4 @@
+-- Development configuration
+{
+  enableDeleteProperties = True
+}

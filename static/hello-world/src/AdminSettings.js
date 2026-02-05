@@ -9,12 +9,14 @@ import { Code } from '@atlaskit/code';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import InfoIcon from '@atlaskit/icon/glyph/info';
+import config from './config.json';
 
 export function AdminSettings() {
   const [adminConfig, setAdminConfig] = useState(null);
   const [systemStatus, setSystemStatus] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -70,6 +72,42 @@ export function AdminSettings() {
       setError(`Failed to update settings: ${err.message}`);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDeleteConfig() {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete the admin configuration?\n\n' +
+      'This will reset the system to default settings where entity property tools are visible to all users by default.\n\n' +
+      'Individual user preferences will remain unchanged.'
+    );
+    
+    if (!confirmed) {
+      return;
+    }
+    
+    setDeleting(true);
+    setError(null);
+    setSuccess(null);
+    
+    try {
+      const result = await invoke('deleteAdminConfig');
+      
+      if (result.success) {
+        setSuccess(result.message);
+        
+        // Refresh system status to get updated data
+        const updatedStatus = await invoke('getSystemStatus');
+        setSystemStatus(updatedStatus);
+        setAdminConfig(updatedStatus.adminConfig);
+      } else {
+        throw new Error('Failed to delete admin configuration');
+      }
+    } catch (err) {
+      console.error('Failed to delete admin config:', err);
+      setError(`Failed to delete configuration: ${err.message}`);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -148,7 +186,7 @@ export function AdminSettings() {
         <h3>Default Setting for All Users</h3>
 
         <Checkbox
-          isChecked={adminConfig?.defaultEnabled || false}
+          isChecked={adminConfig?.defaultEnabled ?? true}
           onChange={handleToggleChange}
           isDisabled={saving}
           label={
@@ -170,7 +208,36 @@ export function AdminSettings() {
           </div>
         )}
       </div>
-
+      
+      {config?.enableDeleteProperties && (
+        <div style={{ marginTop: token('space.400'), marginBottom: token('space.400') }}>
+          <h3>Advanced Configuration</h3>
+          <div style={{ padding: token('space.200'), backgroundColor: 'var(--danger-background)', borderRadius: '4px', border: '1px solid var(--danger-border)' }}>
+            <h4 style={{ margin: 0, marginBottom: token('space.100'), color: 'var(--danger-text)' }}>
+              <WarningIcon label="Warning" size="small" /> Reset to Default Settings
+            </h4>
+            <p style={{ margin: 0, marginBottom: token('space.150'), color: 'var(--text-color)' }}>
+              Delete the admin configuration to restore default behavior. This will make entity property tools visible 
+              to all users by default (unless they have individual preferences set).
+            </p>
+            <Button 
+              appearance="danger"
+              onClick={handleDeleteConfig}
+              isDisabled={deleting || !adminConfig || adminConfig.source === 'default'}
+              spacing="compact"
+            >
+              {deleting && <Spinner size="small" />}
+              {deleting ? 'Deleting Configuration...' : 'Delete Admin Configuration'}
+            </Button>
+            {(adminConfig?.source === 'default') && (
+              <p style={{ margin: 0, marginTop: token('space.100'), fontSize: '12px', color: 'var(--text-color-secondary)' }}>
+                Configuration is already at default settings.
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+      
       <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
         <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> Important Notes

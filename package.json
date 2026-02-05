@@ -12,10 +12,13 @@
     "gen-manifest:dev": "dhall-to-yaml-ng --file manifest.dev.dhall --output manifest.yml",
     "gen-manifest:stg": "dhall-to-yaml-ng --file manifest.stg.dhall --output manifest.yml",
     "gen-manifest:prod": "dhall-to-yaml-ng --file manifest.prod.dhall --output manifest.yml",
+    "gen-config:dev": "dhall-to-json --file configuration.dev.dhall --output static/hello-world/src/config.json",
+    "gen-config:prod": "dhall-to-json --file configuration.prod.dhall --output static/hello-world/src/config.json",
     "clean:manifest": "rm manifest.yml",
-    "deploy:dev": "run-s gen-manifest:dev build-static forge-deploy:dev",
-    "deploy:stg": "run-s gen-manifest:stg build-static forge-deploy:stg",
-    "deploy:prod": "run-s gen-manifest:prod build-static forge-deploy:prod"
+    "clean:configs": "rm -f static/hello-world/src/config.json",
+    "deploy:dev": "run-s gen-manifest:dev gen-config:dev build-static forge-deploy:dev",
+    "deploy:stg": "run-s gen-manifest:stg gen-config:prod build-static forge-deploy:stg",
+    "deploy:prod": "run-s gen-manifest:prod gen-config:prod build-static forge-deploy:prod"
   },
   "keywords": [
     "atlassian",
