@@ -10,6 +10,127 @@ import WarningIcon from '@atlaskit/icon/glyph/warning';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import InfoIcon from '@atlaskit/icon/glyph/info';
 import config from './config.json';
+import styled from 'styled-components';
+
+const LoadingContainer = styled.div`
+  text-align: center;
+  padding: ${token('space.500')};
+`;
+
+const CurrentUserSection = styled.div`
+  margin-top: ${token('space.250')};
+`;
+
+const DefaultSettingSection = styled.div`
+  margin-top: ${token('space.250')};
+  margin-bottom: ${token('space.400')};
+`;
+
+const CheckboxLabel = styled.span`
+  small {
+    color: ${token('color.text.subtle')};
+  }
+`;
+
+const SavingIndicator = styled.div`
+  margin-top: ${token('space.150')};
+  display: flex;
+  align-items: center;
+  
+  span {
+    margin-left: ${token('space.100')};
+  }
+`;
+
+const AdvancedConfigSection = styled.div`
+  margin-top: ${token('space.400')};
+  margin-bottom: ${token('space.400')};
+`;
+
+const DangerCard = styled.div`
+  padding: ${token('space.200')};
+  background-color: ${token('color.background.danger')};
+  border-radius: 4px;
+  border: 1px solid ${token('color.border.danger')};
+`;
+
+const DangerTitle = styled.h4`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+  color: ${token('color.text.danger')};
+`;
+
+const DangerText = styled.p`
+  margin: 0;
+  margin-bottom: ${token('space.150')};
+  color: ${token('color.text')};
+`;
+
+const DefaultConfigText = styled.p`
+  margin: 0;
+  margin-top: ${token('space.100')};
+  font-size: 12px;
+  color: ${token('color.text.subtle')};
+`;
+
+const InfoCard = styled.div`
+  margin-bottom: ${token('space.400')};
+  padding: ${token('space.200')};
+  background-color: ${token('color.background.neutral')};
+  border-radius: 4px;
+  border: 1px solid ${token('color.border')};
+`;
+
+const InfoTitle = styled.h4`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+`;
+
+const InfoList = styled.ul`
+  margin: 0;
+  padding-left: ${token('space.250')};
+`;
+
+const LastModifiedCard = styled.div`
+  margin-bottom: ${token('space.250')};
+  padding: ${token('space.150')};
+  background-color: ${token('color.background.success')};
+  border-radius: 4px;
+  border: 1px solid ${token('color.border')};
+`;
+
+const LastModifiedTitle = styled.h4`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+`;
+
+const LastModifiedText = styled.p`
+  margin: 0;
+`;
+
+const SystemStatusSection = styled.div`
+  
+`;
+
+const SystemStatusDetails = styled.details`
+  margin-top: ${token('space.250')};
+`;
+
+const SystemStatusSummary = styled.summary`
+  cursor: pointer;
+  font-weight: bold;
+`;
+
+const SystemStatusContent = styled.div`
+  margin-top: ${token('space.150')};
+`;
+
+const StatusHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: ${token('space.150')};
+`;
 
 export function AdminSettings() {
   const [adminConfig, setAdminConfig] = useState(null);
@@ -124,10 +245,10 @@ export function AdminSettings() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: token('space.500') }}>
+      <LoadingContainer>
         <Spinner size="large" />
         <p>Loading admin settings...</p>
-      </div>
+      </LoadingContainer>
     );
   }
 
@@ -144,7 +265,7 @@ export function AdminSettings() {
         </Banner>
 
         {systemStatus && (
-          <div style={{ marginTop: token('space.250') }}>
+          <CurrentUserSection>
             <h3>Current User Information</h3>
             <CodeBlock 
               language="json" 
@@ -155,7 +276,7 @@ export function AdminSettings() {
                 isAdmin: systemStatus.user.isAdmin
               }, null, 2)} 
             />
-          </div>
+          </CurrentUserSection>
         )}
       </div>
     );
@@ -184,7 +305,7 @@ export function AdminSettings() {
         </Banner>
       )}
 
-      <div style={{ marginTop: token('space.250'), marginBottom: token('space.400') }}>
+      <DefaultSettingSection>
         <h3>Default Setting for All Users</h3>
 
         <Checkbox
@@ -192,36 +313,36 @@ export function AdminSettings() {
           onChange={handleToggleChange}
           isDisabled={saving}
           label={
-            <span>
+            <CheckboxLabel>
               <strong>Enable entity property tools by default for all users</strong>
               <br />
-              <small style={{ color: token('color.text.subtle') }}>
+              <small>
                 When enabled, all users will see entity property tools unless they explicitly disable them in their preferences.
                 When disabled, users must explicitly enable the tools to see them.
               </small>
-            </span>
+            </CheckboxLabel>
           }
         />
 
         {saving && (
-          <div style={{ marginTop: token('space.150'), display: 'flex', alignItems: 'center' }}>
+          <SavingIndicator>
             <Spinner size="small" />
-            <span style={{ marginLeft: token('space.100') }}>Updating settings...</span>
-          </div>
+            <span>Updating settings...</span>
+          </SavingIndicator>
         )}
-      </div>
+      </DefaultSettingSection>
       
       {config?.enableDeleteProperties && (
-        <div style={{ marginTop: token('space.400'), marginBottom: token('space.400') }}>
+        <AdvancedConfigSection>
           <h3>Advanced Configuration</h3>
-          <div style={{ padding: token('space.200'), backgroundColor: token('color.background.danger'), borderRadius: '4px', border: `1px solid ${token('color.border.danger')}` }}>
-            <h4 style={{ margin: 0, marginBottom: token('space.100'), color: token('color.text.danger') }}>
+          <DangerCard>
+            <DangerTitle>
               <WarningIcon label="Warning" size="small" /> Reset to Default Settings
-            </h4>
-            <p style={{ margin: 0, marginBottom: token('space.150'), color: token('color.text') }}>
+            </DangerTitle>
+            <DangerText>
               Delete the admin configuration to restore default behavior. This will make entity property tools visible 
               to all users by default (unless they have individual preferences set).
-            </p>
+            </DangerText>
             <Button 
               appearance="danger"
               onClick={handleDeleteConfig}
@@ -232,42 +353,42 @@ export function AdminSettings() {
               {deleting ? 'Deleting Configuration...' : 'Delete Admin Configuration'}
             </Button>
             {(adminConfig?.source === 'default') && (
-              <p style={{ margin: 0, marginTop: token('space.100'), fontSize: '12px', color: token('color.text.subtle') }}>
+              <DefaultConfigText>
                 Configuration is already at default settings.
-              </p>
+              </DefaultConfigText>
             )}
-          </div>
-        </div>
+          </DangerCard>
+        </AdvancedConfigSection>
       )}
       
-      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: token('color.background.neutral'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
-        <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
+      <InfoCard>
+        <InfoTitle>
           <InfoIcon label="Info" size="small" /> Important Notes
-        </h4>
-        <ul style={{ margin: 0, paddingLeft: token('space.250') }}>
+        </InfoTitle>
+        <InfoList>
           <li>This setting controls visibility of issue panels and project pages</li>
           <li>Global pages (like this admin interface) remain visible to all users</li>
           <li>Individual users can override this setting in their personal preferences</li>
           <li>Changes take effect immediately for all users</li>
-        </ul>
-      </div>
+        </InfoList>
+      </InfoCard>
 
       {adminConfig?.lastModified && (
-        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: token('color.background.success'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
-          <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Modified</h4>
-          <p style={{ margin: 0 }}>
+        <LastModifiedCard>
+          <LastModifiedTitle>Last Modified</LastModifiedTitle>
+          <LastModifiedText>
             <strong>When:</strong> {new Date(adminConfig.lastModified).toLocaleString()}<br />
             <strong>By:</strong> {adminConfig.modifiedByDisplayName || adminConfig.modifiedBy}
-          </p>
-        </div>
+          </LastModifiedText>
+        </LastModifiedCard>
       )}
 
       {systemStatus && (
-        <div>
-          <details style={{ marginTop: token('space.250') }}>
-            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>System Status</summary>
-            <div style={{ marginTop: token('space.150') }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: token('space.150') }}>
+        <SystemStatusSection>
+          <SystemStatusDetails>
+            <SystemStatusSummary>System Status</SystemStatusSummary>
+            <SystemStatusContent>
+              <StatusHeader>
                 <h4>Current System Information</h4>
                 <Button
                   appearance="subtle"
@@ -276,16 +397,16 @@ export function AdminSettings() {
                 >
                   Refresh
                 </Button>
-              </div>
+              </StatusHeader>
 
               <CodeBlock 
                 language="json" 
                 showLineNumbers={false} 
                 text={JSON.stringify(systemStatus, null, 2)} 
               />
-            </div>
-          </details>
-        </div>
+            </SystemStatusContent>
+          </SystemStatusDetails>
+        </SystemStatusSection>
       )}
     </div>
   );

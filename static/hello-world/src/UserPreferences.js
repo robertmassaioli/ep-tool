@@ -9,6 +9,106 @@ import { CodeBlock } from '@atlaskit/code';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import InfoIcon from '@atlaskit/icon/glyph/info';
+import styled from 'styled-components';
+
+const LoadingContainer = styled.div`
+  text-align: center;
+  padding: ${token('space.500')};
+`;
+
+const PreferenceSection = styled.div`
+  margin-top: ${token('space.250')};
+  margin-bottom: ${token('space.400')};
+`;
+
+const SavingIndicator = styled.div`
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  
+  span {
+    margin-left: ${token('space.100')};
+  }
+`;
+
+const EffectiveSettingCard = styled.div`
+  margin-bottom: ${token('space.400')};
+  padding: ${token('space.200')};
+  background-color: ${props => props.enabled ? token('color.background.success') : token('color.background.danger')};
+  border-radius: 4px;
+  border: 2px solid ${props => props.enabled ? token('color.border.success') : token('color.border.danger')};
+`;
+
+const EffectiveSettingTitle = styled.h4`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+  color: ${props => props.enabled ? token('color.text.success') : token('color.text.danger')};
+`;
+
+const EffectiveSettingText = styled.p`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+`;
+
+const EffectiveSettingSubtext = styled.p`
+  margin: 0;
+  font-size: 14px;
+  color: ${token('color.text.subtle')};
+`;
+
+const InfoCard = styled.div`
+  margin-bottom: ${token('space.400')};
+  padding: ${token('space.200')};
+  background-color: ${token('color.background.neutral')};
+  border-radius: 4px;
+  border: 1px solid ${token('color.border')};
+`;
+
+const InfoTitle = styled.h4`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+`;
+
+const InfoList = styled.ul`
+  margin: 0;
+  padding-left: ${token('space.250')};
+`;
+
+const InfoNote = styled.p`
+  margin: ${token('space.150')} 0 0 0;
+  font-size: 14px;
+  color: ${token('color.text.subtle')};
+`;
+
+const LastUpdatedCard = styled.div`
+  margin-bottom: ${token('space.250')};
+  padding: ${token('space.150')};
+  background-color: ${token('color.background.success')};
+  border-radius: 4px;
+  border: 1px solid ${token('color.border')};
+`;
+
+const LastUpdatedTitle = styled.h4`
+  margin: 0;
+  margin-bottom: ${token('space.100')};
+`;
+
+const LastUpdatedText = styled.p`
+  margin: 0;
+`;
+
+const DebugSection = styled.details`
+  margin-top: ${token('space.250')};
+`;
+
+const DebugSummary = styled.summary`
+  cursor: pointer;
+  font-weight: bold;
+`;
+
+const DebugContent = styled.div`
+  margin-top: ${token('space.150')};
+`;
 
 export function UserPreferences() {
   const [userPref, setUserPref] = useState(null);
@@ -115,10 +215,10 @@ export function UserPreferences() {
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: token('space.500') }}>
+      <LoadingContainer>
         <Spinner size="large" />
         <p>Loading your preferences...</p>
-      </div>
+      </LoadingContainer>
     );
   }
 
@@ -166,7 +266,7 @@ export function UserPreferences() {
         </Banner>
       )}
 
-      <div style={{ marginTop: token('space.250'), marginBottom: token('space.400') }}>
+      <PreferenceSection>
         <h3>Preference Setting</h3>
 
         <RadioGroup
@@ -177,62 +277,56 @@ export function UserPreferences() {
         />
 
         {saving && (
-          <div style={{ marginTop: '15px', display: 'flex', alignItems: 'center' }}>
+          <SavingIndicator>
             <Spinner size="small" />
-            <span style={{ marginLeft: token('space.100') }}>Updating your preference...</span>
-          </div>
+            <span>Updating your preference...</span>
+          </SavingIndicator>
         )}
-      </div>
+      </PreferenceSection>
 
       {effectiveSetting && (
-        <div style={{
-          marginBottom: token('space.400'),
-          padding: token('space.200'),
-          backgroundColor: effectiveSetting.enabled ? token('color.background.success') : token('color.background.danger'),
-          borderRadius: '4px',
-          border: `2px solid ${effectiveSetting.enabled ? token('color.border.success') : token('color.border.danger')}`
-        }}>
-          <h4 style={{ margin: 0, marginBottom: token('space.100'), color: effectiveSetting.enabled ? token('color.text.success') : token('color.text.danger') }}>
+        <EffectiveSettingCard enabled={effectiveSetting.enabled}>
+          <EffectiveSettingTitle enabled={effectiveSetting.enabled}>
             <SuccessIcon label="Current Setting" size="small" /> Current Effective Setting
-          </h4>
-          <p style={{ margin: 0, marginBottom: token('space.100') }}>
+          </EffectiveSettingTitle>
+          <EffectiveSettingText>
             <strong>Entity property tools are currently {effectiveSetting.enabled ? 'ENABLED' : 'DISABLED'} for you</strong>
-          </p>
-          <p style={{ margin: 0, fontSize: '14px', color: token('color.text.subtle') }}>
+          </EffectiveSettingText>
+          <EffectiveSettingSubtext>
             Source: {effectiveSetting.source === 'user' ? 'Your personal preference' :
               effectiveSetting.source === 'admin' ? 'Administrator default' :
                 'System fallback'}
-          </p>
-        </div>
+          </EffectiveSettingSubtext>
+        </EffectiveSettingCard>
       )}
 
-      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: token('color.background.neutral'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
-        <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
+      <InfoCard>
+        <InfoTitle>
           <InfoIcon label="Info" size="small" /> How Preferences Work
-        </h4>
-        <ul style={{ margin: 0, paddingLeft: token('space.250') }}>
+        </InfoTitle>
+        <InfoList>
           <li><strong>Use admin default:</strong> Your setting will follow whatever the administrator has configured for all users</li>
           <li><strong>Always show:</strong> You'll always see the entity property tools, regardless of admin settings</li>
           <li><strong>Always hide:</strong> You'll never see the entity property tools, regardless of admin settings</li>
-        </ul>
-        <p style={{ margin: `${token('space.150')} 0 0 0`, fontSize: '14px', color: token('color.text.subtle') }}>
+        </InfoList>
+        <InfoNote>
           Note: This only affects issue panels and project pages. Global pages (like this preferences page) are always accessible.
-        </p>
-      </div>
+        </InfoNote>
+      </InfoCard>
 
       {userPref?.lastModified && (
-        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: token('color.background.success'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
-          <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Updated</h4>
-          <p style={{ margin: 0 }}>
+        <LastUpdatedCard>
+          <LastUpdatedTitle>Last Updated</LastUpdatedTitle>
+          <LastUpdatedText>
             {new Date(userPref.lastModified).toLocaleString()}
-          </p>
-        </div>
+          </LastUpdatedText>
+        </LastUpdatedCard>
       )}
 
       <div>
-        <details style={{ marginTop: token('space.250') }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug Information</summary>
-          <div style={{ marginTop: token('space.150') }}>
+        <DebugSection>
+          <DebugSummary>Debug Information</DebugSummary>
+          <DebugContent>
             <h4>Current Status</h4>
             <CodeBlock
               language="json"
@@ -243,8 +337,8 @@ export function UserPreferences() {
                 effectiveSetting: effectiveSetting
               }, null, 2)}
             />
-          </div>
-        </details>
+          </DebugContent>
+        </DebugSection>
       </div>
     </div>
   );
