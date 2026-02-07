@@ -29,12 +29,24 @@ let -- Define the proper Forge display conditions structure using Connect proper
             }
           },
           or = {
+            -- Admin explicitly enabled - New Forge object format
             entityPropertyEqualTo = {
               entity = "app",
               propertyKey = "ep-tool.disabled-for-all",
               objectName = "disabledForAll",
               value = "false"
             },
+            -- Admin explicitly enabled - Old Connect boolean format (using double negative)
+            not = {
+              not = {
+                entityPropertyEqualTo = {
+                  entity = "app",
+                  propertyKey = "ep-tool.disabled-for-all",
+                  value = "false"
+                }
+              }
+            },
+            -- No admin config exists (default to enabled)
             not = {
               entityPropertyExists = {
                 entity = "app",
