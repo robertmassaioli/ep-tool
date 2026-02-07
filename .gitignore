@@ -52,5 +52,6 @@ Thumbs.db
 *.mov
 *.wmv
 
-# Manifest is now generated
+# Generated files
 manifest.yml
+static/hello-world/src/config.json
