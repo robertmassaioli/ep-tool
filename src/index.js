@@ -39,16 +39,16 @@ async function getAdminConfigInternal() {
     const response = await api.asApp().requestJira(
       route`/rest/forge/1/app/properties/${ADMIN_CONFIG_KEY}`
     );
-    
+
     if (response.status === 404) {
       // No admin config exists yet - return default
       return { defaultEnabled: true, source: 'default' };
     }
-    
+
     const property = await response.json();
     // Parse the JSON string value if it's a string
-    const parsedValue = typeof property.value === 'string' 
-      ? JSON.parse(property.value) 
+    const parsedValue = typeof property.value === 'string'
+      ? JSON.parse(property.value)
       : property.value;
     return { ...parsedValue, source: 'admin' };
   } catch (error) {
@@ -66,24 +66,24 @@ resolver.define('getAdminConfig', async (req) => {
 
 resolver.define('setAdminConfig', async (req) => {
   console.log('setAdminConfig called with payload:', req.payload);
-  
+
   const { defaultEnabled } = req.payload;
-  
+
   try {
     console.log('Checking admin permissions...');
     // Check admin permissions
     const isAdmin = await checkAdminPermissions();
     console.log('Admin permission check result:', isAdmin);
-    
+
     if (!isAdmin) {
       console.log('User does not have admin permissions, throwing error');
       throw new Error('Insufficient permissions: Admin access required');
     }
-    
+
     console.log('Getting current user...');
     const user = await getCurrentUser();
     console.log('Current user:', { accountId: user.accountId, displayName: user.displayName });
-    
+
     const config = {
       defaultEnabled: Boolean(defaultEnabled),
       lastModified: new Date().toISOString(),
@@ -91,7 +91,7 @@ resolver.define('setAdminConfig', async (req) => {
       modifiedByDisplayName: user.displayName
     };
     console.log('Prepared config object:', config);
-    
+
     console.log('Storing config in app properties...');
     // Store in app properties (for display conditions)
     const response = await api.asApp().requestJira(
@@ -102,7 +102,7 @@ resolver.define('setAdminConfig', async (req) => {
       }
     );
     console.log('App property storage response status:', response.status);
-    
+
     console.log('setAdminConfig completed successfully');
     return { success: true, config };
   } catch (error) {
@@ -114,22 +114,22 @@ resolver.define('setAdminConfig', async (req) => {
 
 resolver.define('deleteAdminConfig', async (req) => {
   console.log('deleteAdminConfig called');
-  
+
   try {
     console.log('Checking admin permissions...');
     // Check admin permissions
     const isAdmin = await checkAdminPermissions();
     console.log('Admin permission check result:', isAdmin);
-    
+
     if (!isAdmin) {
       console.log('User does not have admin permissions, throwing error');
       throw new Error('Insufficient permissions: Admin access required');
     }
-    
+
     console.log('Getting current user...');
     const user = await getCurrentUser();
     console.log('Current user:', { accountId: user.accountId, displayName: user.displayName });
-    
+
     console.log('Deleting admin config from app properties...');
     // Delete from app properties
     const response = await api.asApp().requestJira(
@@ -138,20 +138,20 @@ resolver.define('deleteAdminConfig', async (req) => {
       }
     );
     console.log('App property deletion response status:', response.status);
-    
+
     // Handle 404 as success (property didn't exist anyway)
     if (response.status === 404) {
       console.log('Admin config property did not exist, treating as successful deletion');
-      return { 
-        success: true, 
+      return {
+        success: true,
         message: 'Admin configuration was already at default settings',
-        wasDeleted: false 
+        wasDeleted: false
       };
     }
-    
+
     console.log('deleteAdminConfig completed successfully');
-    return { 
-      success: true, 
+    return {
+      success: true,
       message: 'Admin configuration deleted successfully. All users will now see entity property tools by default.',
       wasDeleted: true,
       deletedBy: user.displayName,
@@ -169,20 +169,20 @@ async function getUserPreferenceInternal({ accountId } = {}) {
   try {
     // Use provided accountId or get current user
     const targetAccountId = accountId || (await getCurrentUser()).accountId;
-    
+
     const response = await api.asUser().requestJira(
       route`/rest/api/3/user/properties/${USER_PREFERENCE_KEY}?accountId=${targetAccountId}`
     );
-    
+
     if (response.status === 404) {
       // No preference set - user will inherit admin default
       return { enabled: null, source: 'none' };
     }
-    
+
     const property = await response.json();
     // Parse the JSON string value if it's a string
-    const parsedValue = typeof property.value === 'string' 
-      ? JSON.parse(property.value) 
+    const parsedValue = typeof property.value === 'string'
+      ? JSON.parse(property.value)
       : property.value;
     return { ...parsedValue, source: 'user' };
   } catch (error) {
@@ -208,7 +208,7 @@ resolver.define('setUserPreference', async (req) => {
       lastModified: new Date().toISOString(),
       accountId: user.accountId
     };
-    
+
     if (enabled === null) {
       // User wants to use admin default - delete the preference
       try {
@@ -246,21 +246,21 @@ resolver.define('setUserPreference', async (req) => {
 async function getEffectiveSettingInternal() {
   try {
     const userPref = await getUserPreferenceInternal();
-    
+
     // If user has explicit preference, use it
     if (userPref.enabled !== null) {
-      return { 
-        enabled: userPref.enabled, 
-        source: 'user', 
+      return {
+        enabled: userPref.enabled,
+        source: 'user',
         userPreference: userPref.enabled,
         adminDefault: null
       };
     }
-    
+
     // Otherwise, use admin setting
     const adminConfig = await getAdminConfigInternal();
-    return { 
-      enabled: adminConfig.defaultEnabled, 
+    return {
+      enabled: adminConfig.defaultEnabled,
       source: 'admin',
       userPreference: null,
       adminDefault: adminConfig.defaultEnabled
@@ -268,8 +268,8 @@ async function getEffectiveSettingInternal() {
   } catch (error) {
     console.error('Error getting effective setting:', error);
     // Safe fallback
-    return { 
-      enabled: true, 
+    return {
+      enabled: true,
       source: 'fallback',
       userPreference: null,
       adminDefault: null,
@@ -293,7 +293,7 @@ resolver.define('getSystemStatus', async (req) => {
     const adminConfig = await getAdminConfigInternal();
     const userPref = await getUserPreferenceInternal();
     const effective = await getEffectiveSettingInternal();
-    
+
     return {
       user: {
         accountId: user.accountId,
@@ -316,7 +316,7 @@ resolver.define('debugProperties', async (req) => {
   console.log('debugProperties called');
   try {
     const user = await getCurrentUser();
-    
+
     // Get all app properties
     let appProperties = [];
     try {
@@ -325,7 +325,7 @@ resolver.define('debugProperties', async (req) => {
     } catch (e) {
       console.log('Could not fetch app properties:', e.message);
     }
-    
+
     // Get user properties
     let userProperties = [];
     try {
@@ -336,7 +336,7 @@ resolver.define('debugProperties', async (req) => {
     } catch (e) {
       console.log('Could not fetch user properties:', e.message);
     }
-    
+
     return {
       currentUser: user,
       appProperties: appProperties.keys || [],
