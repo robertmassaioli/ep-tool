@@ -4,44 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>React App</title>
-    <script>
-        // Theme detection script - runs before React loads to prevent FOUC
-        (function() {
-            function detectAndApplyTheme() {
-                try {
-                    // Check for Jira dark theme indicators
-                    const isDark = 
-                        document.documentElement.getAttribute('data-color-mode') === 'dark' ||
-                        document.body.classList.contains('aui-theme-dark') ||
-                        document.documentElement.classList.contains('aui-theme-dark') ||
-                        // Fallback to system preference
-                        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                    
-                    // Apply theme to document root
-                    document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-                } catch (error) {
-                    console.warn('Could not detect theme, defaulting to light:', error);
-                    document.documentElement.setAttribute('data-theme', 'light');
-                }
-            }
-
-            // Apply theme immediately
-            detectAndApplyTheme();
-
-            // Re-check theme when DOM is ready (in case Jira classes load later)
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', detectAndApplyTheme);
-            }
-
-            // Listen for system theme changes
-            if (window.matchMedia) {
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', detectAndApplyTheme);
-            }
-
-            // Periodically check for Jira theme changes (every 2 seconds)
-            setInterval(detectAndApplyTheme, 2000);
-        })();
-    </script>
 </head>
 <body>
 <noscript>You need to enable JavaScript to run this app.</noscript>
