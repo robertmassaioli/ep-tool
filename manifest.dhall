@@ -1,34 +1,34 @@
-let -- Define the proper Forge display conditions structure
+let -- Define the proper Forge display conditions structure using Connect property names
     entityPropertyDisplayConditions = {
       or = {
-        -- User explicitly enabled  
+        -- User explicitly enabled (ep-tool.enabled-for-me = true)
         entityPropertyEqualTo = {
           entity = "user",
-          propertyKey = "entity-properties-user-preference", 
+          propertyKey = "ep-tool.enabled-for-me", 
           objectName = "enabled",
           value = "true"
         },
-        -- No user preference AND (admin enabled OR no admin config exists)
+        -- No user preference AND admin didn't disable
         and = {
           not = {
             entityPropertyExists = {
               entity = "user",
-              propertyKey = "entity-properties-user-preference"
+              propertyKey = "ep-tool.enabled-for-me"
             }
           },
           or = {
-            -- Admin explicitly enabled
+            -- Admin didn't disable (ep-tool.disabled-for-all = false)
             entityPropertyEqualTo = {
               entity = "app",
-              propertyKey = "entity-properties-admin-config",
-              objectName = "defaultEnabled", 
-              value = "true"
+              propertyKey = "ep-tool.disabled-for-all",
+              objectName = "disabledForAll", 
+              value = "false"
             },
             -- No admin config exists (default to enabled)
             not = {
               entityPropertyExists = {
                 entity = "app", 
-                propertyKey = "entity-properties-admin-config"
+                propertyKey = "ep-tool.disabled-for-all"
               }
             }
           }

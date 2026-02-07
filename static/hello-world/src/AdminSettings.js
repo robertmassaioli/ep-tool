@@ -171,15 +171,21 @@ export function AdminSettings() {
 
   async function handleToggleChange(event) {
     const newValue = event.target.checked;
+    const newDisabledForAll = !newValue; // Invert for Connect property logic
     setSaving(true);
     setError(null);
     setSuccess(null);
 
     try {
-      const result = await invoke('setAdminConfig', { defaultEnabled: newValue });
+      const result = await invoke('setAdminConfig', { disabledForAll: newDisabledForAll });
 
       if (result.success) {
-        setAdminConfig(result.config);
+        // Convert back to UI-friendly format
+        const uiConfig = { 
+          ...result.config, 
+          defaultEnabled: !result.config.disabledForAll 
+        };
+        setAdminConfig(uiConfig);
         setSuccess(`Successfully ${newValue ? 'enabled' : 'disabled'} entity property tools by default for all users.`);
 
         // Refresh system status to get updated data
