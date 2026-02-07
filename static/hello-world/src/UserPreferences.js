@@ -5,7 +5,7 @@ import Button from '@atlaskit/button/standard-button';
 import { RadioGroup } from '@atlaskit/radio';
 import Spinner from '@atlaskit/spinner';
 import Banner from '@atlaskit/banner';
-import { Code } from '@atlaskit/code';
+import { CodeBlock } from '@atlaskit/code';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import InfoIcon from '@atlaskit/icon/glyph/info';
@@ -234,13 +234,15 @@ export function UserPreferences() {
           <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>Debug Information</summary>
           <div style={{ marginTop: token('space.150') }}>
             <h4>Current Status</h4>
-            <Code language="json">
-              {JSON.stringify({
+            <CodeBlock
+              language="json"
+              showLineNumbers={false}
+              text={JSON.stringify({
                 userPreference: userPref,
                 adminDefault: adminConfig,
                 effectiveSetting: effectiveSetting
               }, null, 2)}
-            </Code>
+            />
           </div>
         </details>
       </div>

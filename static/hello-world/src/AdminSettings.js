@@ -5,7 +5,7 @@ import Button, { ButtonGroup } from '@atlaskit/button/standard-button';
 import { Checkbox } from '@atlaskit/checkbox';
 import Spinner from '@atlaskit/spinner';
 import Banner from '@atlaskit/banner';
-import { Code } from '@atlaskit/code';
+import { CodeBlock } from '@atlaskit/code';
 import WarningIcon from '@atlaskit/icon/glyph/warning';
 import SuccessIcon from '@atlaskit/icon/glyph/check-circle';
 import InfoIcon from '@atlaskit/icon/glyph/info';
@@ -146,13 +146,15 @@ export function AdminSettings() {
         {systemStatus && (
           <div style={{ marginTop: token('space.250') }}>
             <h3>Current User Information</h3>
-            <Code language="json">
-              {JSON.stringify({
+            <CodeBlock 
+              language="json" 
+              showLineNumbers={false} 
+              text={JSON.stringify({
                 displayName: systemStatus.user.displayName,
                 accountId: systemStatus.user.accountId,
                 isAdmin: systemStatus.user.isAdmin
-              }, null, 2)}
-            </Code>
+              }, null, 2)} 
+            />
           </div>
         )}
       </div>
@@ -262,20 +264,27 @@ export function AdminSettings() {
 
       {systemStatus && (
         <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: token('space.150') }}>
-            <h3>System Status</h3>
-            <Button
-              appearance="subtle"
-              onClick={refreshStatus}
-              spacing="compact"
-            >
-              Refresh
-            </Button>
-          </div>
+          <details style={{ marginTop: token('space.250') }}>
+            <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>System Status</summary>
+            <div style={{ marginTop: token('space.150') }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: token('space.150') }}>
+                <h4>Current System Information</h4>
+                <Button
+                  appearance="subtle"
+                  onClick={refreshStatus}
+                  spacing="compact"
+                >
+                  Refresh
+                </Button>
+              </div>
 
-          <Code language="json">
-            {JSON.stringify(systemStatus, null, 2)}
-          </Code>
+              <CodeBlock 
+                language="json" 
+                showLineNumbers={false} 
+                text={JSON.stringify(systemStatus, null, 2)} 
+              />
+            </div>
+          </details>
         </div>
       )}
     </div>
