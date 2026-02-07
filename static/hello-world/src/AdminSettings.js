@@ -193,7 +193,7 @@ export function AdminSettings() {
             <span>
               <strong>Enable entity property tools by default for all users</strong>
               <br />
-              <small style={{ color: 'var(--text-color-secondary)' }}>
+              <small style={{ color: token('color.text.subtle') }}>
                 When enabled, all users will see entity property tools unless they explicitly disable them in their preferences.
                 When disabled, users must explicitly enable the tools to see them.
               </small>
@@ -212,11 +212,11 @@ export function AdminSettings() {
       {config?.enableDeleteProperties && (
         <div style={{ marginTop: token('space.400'), marginBottom: token('space.400') }}>
           <h3>Advanced Configuration</h3>
-          <div style={{ padding: token('space.200'), backgroundColor: 'var(--danger-background)', borderRadius: '4px', border: '1px solid var(--danger-border)' }}>
-            <h4 style={{ margin: 0, marginBottom: token('space.100'), color: 'var(--danger-text)' }}>
+          <div style={{ padding: token('space.200'), backgroundColor: token('color.background.danger'), borderRadius: '4px', border: `1px solid ${token('color.border.danger')}` }}>
+            <h4 style={{ margin: 0, marginBottom: token('space.100'), color: token('color.text.danger') }}>
               <WarningIcon label="Warning" size="small" /> Reset to Default Settings
             </h4>
-            <p style={{ margin: 0, marginBottom: token('space.150'), color: 'var(--text-color)' }}>
+            <p style={{ margin: 0, marginBottom: token('space.150'), color: token('color.text') }}>
               Delete the admin configuration to restore default behavior. This will make entity property tools visible 
               to all users by default (unless they have individual preferences set).
             </p>
@@ -230,7 +230,7 @@ export function AdminSettings() {
               {deleting ? 'Deleting Configuration...' : 'Delete Admin Configuration'}
             </Button>
             {(adminConfig?.source === 'default') && (
-              <p style={{ margin: 0, marginTop: token('space.100'), fontSize: '12px', color: 'var(--text-color-secondary)' }}>
+              <p style={{ margin: 0, marginTop: token('space.100'), fontSize: '12px', color: token('color.text.subtle') }}>
                 Configuration is already at default settings.
               </p>
             )}
@@ -238,7 +238,7 @@ export function AdminSettings() {
         </div>
       )}
       
-      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: token('color.background.neutral'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
         <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> Important Notes
         </h4>
@@ -251,7 +251,7 @@ export function AdminSettings() {
       </div>
 
       {adminConfig?.lastModified && (
-        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: token('color.background.success'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
           <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Modified</h4>
           <p style={{ margin: 0 }}>
             <strong>When:</strong> {new Date(adminConfig.lastModified).toLocaleString()}<br />

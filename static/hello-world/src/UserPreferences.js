@@ -188,17 +188,17 @@ export function UserPreferences() {
         <div style={{
           marginBottom: token('space.400'),
           padding: token('space.200'),
-          backgroundColor: effectiveSetting.enabled ? 'var(--success-background)' : 'var(--error-background)',
+          backgroundColor: effectiveSetting.enabled ? token('color.background.success') : token('color.background.danger'),
           borderRadius: '4px',
-          border: `2px solid ${effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)'}`
+          border: `2px solid ${effectiveSetting.enabled ? token('color.border.success') : token('color.border.danger')}`
         }}>
-          <h4 style={{ margin: 0, marginBottom: token('space.100'), color: effectiveSetting.enabled ? 'var(--success-color)' : 'var(--error-color)' }}>
+          <h4 style={{ margin: 0, marginBottom: token('space.100'), color: effectiveSetting.enabled ? token('color.text.success') : token('color.text.danger') }}>
             <SuccessIcon label="Current Setting" size="small" /> Current Effective Setting
           </h4>
           <p style={{ margin: 0, marginBottom: token('space.100') }}>
             <strong>Entity property tools are currently {effectiveSetting.enabled ? 'ENABLED' : 'DISABLED'} for you</strong>
           </p>
-          <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-color-secondary)' }}>
+          <p style={{ margin: 0, fontSize: '14px', color: token('color.text.subtle') }}>
             Source: {effectiveSetting.source === 'user' ? 'Your personal preference' :
               effectiveSetting.source === 'admin' ? 'Administrator default' :
                 'System fallback'}
@@ -206,7 +206,7 @@ export function UserPreferences() {
         </div>
       )}
 
-      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: 'var(--surface-color)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+      <div style={{ marginBottom: token('space.400'), padding: token('space.200'), backgroundColor: token('color.background.neutral'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
         <h4 style={{ margin: 0, marginBottom: token('space.100') }}>
           <InfoIcon label="Info" size="small" /> How Preferences Work
         </h4>
@@ -215,13 +215,13 @@ export function UserPreferences() {
           <li><strong>Always show:</strong> You'll always see the entity property tools, regardless of admin settings</li>
           <li><strong>Always hide:</strong> You'll never see the entity property tools, regardless of admin settings</li>
         </ul>
-        <p style={{ margin: `${token('space.150')} 0 0 0`, fontSize: '14px', color: 'var(--text-color-secondary)' }}>
+        <p style={{ margin: `${token('space.150')} 0 0 0`, fontSize: '14px', color: token('color.text.subtle') }}>
           Note: This only affects issue panels and project pages. Global pages (like this preferences page) are always accessible.
         </p>
       </div>
 
       {userPref?.lastModified && (
-        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: 'var(--success-background)', borderRadius: '4px', border: '1px solid var(--border-color)' }}>
+        <div style={{ marginBottom: token('space.250'), padding: token('space.150'), backgroundColor: token('color.background.success'), borderRadius: '4px', border: `1px solid ${token('color.border')}` }}>
           <h4 style={{ margin: 0, marginBottom: token('space.100') }}>Last Updated</h4>
           <p style={{ margin: 0 }}>
             {new Date(userPref.lastModified).toLocaleString()}
