@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { view } from '@forge/bridge';
-import { Router, useNavigate } from 'react-router';
+import { Router } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import { isPresent } from 'ts-is-present';
 import { useViewContext } from './ViewContext';
@@ -27,65 +28,98 @@ function convertContextToRoute (context) {
     url += `/modal/${context.extension.modal.type}`;
   }
 
-  console.log('url', url);
   return url;
 }
 
 export function SpaRouter (props) {
-  const [history, setHistory] = useState(null);
+  const [historyState, setHistoryState] = useState(null);
+  const [navigator, setNavigator] = useState(null);
+  const historyCleanupRef = React.useRef(null);
   const context = useViewContext();
 
   useEffect(() => {
-    view.createHistory().then((newHistory) => {
-      setHistory(newHistory);
-      console.log('created history', newHistory);
-    }).catch(e => {
-      console.error('view createHistory', e);
+    // Using IIFE to handle async code in useEffect (same as Forge docs)
+    (async () => {
+      try {
+        // Use Forge's view.createHistory() as recommended
+        const history = await view.createHistory();
+        setNavigator(history);
 
-      // TODO in here we can default to our static routing sub-system
-      setHistory(createMemoryHistory({
-        initialEntries: [convertContextToRoute(context)]
-      }));
-    });
+        // Set initial values from the history object
+        setHistoryState({
+          action: history.action,
+          location: history.location,
+        });
+
+        // Listen for changes in the history
+        const unsubscribe = await history.listen((location, action) => {
+          setHistoryState({
+            action,
+            location,
+          });
+        });
+
+        // Store cleanup function reference
+        historyCleanupRef.current = unsubscribe;
+      } catch (e) {
+        console.error('view createHistory', e);
+
+        // Fallback to static routing system
+        const fallbackHistory = createMemoryHistory({
+          initialEntries: [convertContextToRoute(context)]
+        });
+
+        setNavigator(fallbackHistory);
+        setHistoryState({
+          action: fallbackHistory.action,
+          location: fallbackHistory.location,
+        });
+
+        // Listen for changes in fallback history
+        const unsubscribe = fallbackHistory.listen((location, action) => {
+          setHistoryState({
+            action,
+            location,
+          });
+        });
+
+        historyCleanupRef.current = unsubscribe;
+      }
+    })();
+  }, [context]);
+
+  const handleUnload = () => {
+    if (historyCleanupRef.current) {
+      historyCleanupRef.current();
+    }
+  };
+
+  // Cleanup history listener when component unmounts or iframe unloads
+  useEffect(() => {
+    window.addEventListener('unload', handleUnload);
+    return () => {
+      window.removeEventListener('unload', handleUnload);
+      // Also cleanup on component unmount
+      if (historyCleanupRef.current) {
+        historyCleanupRef.current();
+      }
+    };
   }, []);
 
-  const [historyState, setHistoryState] = useState(null);
-
-  useEffect(() => {
-    if (!historyState && history) {
-      setHistoryState({
-        action: history.action,
-        location: history.location
-      });
-    }
-  }, [history, historyState]);
-
-  useEffect(() => {
-    if (history) {
-      history.listen((location, action) => {
-        setHistoryState({
-          action,
-          location
-        });
-      });
-    }
-  }, [history]);
+  // Wait for both navigator and historyState to be ready
+  if (!navigator || !historyState) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
-      {history && historyState
-        ? (
-          <Router
-            navigator={history}
-            navigationType={historyState.action}
-            location={historyState.location}
-          >
-            {props.children}
-          </Router>
-          )
-        : (
-            'Loading...'
-          )}
+      <Router
+        navigator={navigator}
+        navigationType={historyState.action}
+        location={historyState.location}
+      >
+        {props.children}
+      </Router>
     </div>
   );
 }

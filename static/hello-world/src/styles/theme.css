@@ -1,0 +1,36 @@
+/* Use Atlaskit design tokens - these are automatically provided by Forge */
+/* Reference: https://atlassian.design/components/tokens/all-tokens */
+
+/* Apply design tokens to common elements */
+body {
+  background-color: var(--ds-surface);
+  color: var(--ds-text);
+}
+
+/* Smooth transitions for theme switching */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Utility classes using official Atlaskit design tokens */
+.ds-surface {
+  background-color: var(--ds-surface);
+  color: var(--ds-text);
+}
+
+.ds-surface-raised {
+  background-color: var(--ds-surface-raised);
+  color: var(--ds-text);
+}
+
+.ds-border {
+  border-color: var(--ds-border);
+}
+
+.ds-text-subtle {
+  color: var(--ds-text-subtle);
+}
+
+.ds-text-disabled {
+  color: var(--ds-text-disabled);
+}

@@ -1,6 +1,43 @@
-{ app =
-  { features.autoUserConsent = True
-  , id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
+let -- Define the proper Forge display conditions structure
+    entityPropertyDisplayConditions = {
+      or = {
+        -- User explicitly enabled  
+        entityPropertyEqualTo = {
+          entity = "user",
+          propertyKey = "entity-properties-user-preference", 
+          objectName = "enabled",
+          value = "true"
+        },
+        -- No user preference AND (admin enabled OR no admin config exists)
+        and = {
+          not = {
+            entityPropertyExists = {
+              entity = "user",
+              propertyKey = "entity-properties-user-preference"
+            }
+          },
+          or = {
+            -- Admin explicitly enabled
+            entityPropertyEqualTo = {
+              entity = "app",
+              propertyKey = "entity-properties-admin-config",
+              objectName = "defaultEnabled", 
+              value = "true"
+            },
+            -- No admin config exists (default to enabled)
+            not = {
+              entityPropertyExists = {
+                entity = "app", 
+                propertyKey = "entity-properties-admin-config"
+              }
+            }
+          }
+        }
+      }
+    }
+
+in { app =
+  { id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
   , runtime.name = "nodejs20.x"
   }
 , modules =
@@ -17,6 +54,7 @@
         , { route = "workflow-transitions"
           , title = "Workflow Transition entity properties"
           }
+        , { route = "user-preferences", title = "User Preferences" }
         ]
       , resolver.function = "resolver"
       , resource = "main"
@@ -29,6 +67,7 @@
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity properties"
+      , displayConditions = entityPropertyDisplayConditions
       }
     ]
   , `jira:projectPage` =
@@ -37,6 +76,16 @@
       , resolver.function = "resolver"
       , resource = "main"
       , title = "Entity properties"
+      , displayConditions = entityPropertyDisplayConditions
+      }
+    ]
+  , `jira:adminPage` =
+    [ { icon = "resource:main;entity-properties-icon.svg"
+      , key = "entity-properties-admin"
+      , resolver.function = "resolver"
+      , resource = "main"
+      , title = "Entity Property Tool Settings"
+      , useAsConfig = True
       }
     ]
   }

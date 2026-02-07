@@ -1,3 +1,4 @@
+import { token } from '@atlaskit/tokens';
 import { requestJira } from '@forge/bridge';
 import React, { useState } from 'react';
 import Select from '@atlaskit/select';
@@ -10,7 +11,7 @@ import styled from 'styled-components';
 import { SelectZIndexFix } from './SelectZIndexFix';
 
 const AppContainer = styled.div`
-  margin-top: 16px;
+  margin-top: ${token('space.200')};
 `;
 
 async function getIssueTypes () {
