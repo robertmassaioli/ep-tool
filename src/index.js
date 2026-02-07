@@ -235,21 +235,21 @@ resolver.define('setUserPreference', async (req) => {
         throw deleteError;
       }
     } else {
-      // Store simple boolean like Connect (not an object with metadata)
-      await api.asUser().requestJira(
-        route`/rest/api/3/user/properties/${USER_PREFERENCE_KEY}?accountId=${user.accountId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Boolean(enabled))
-        }
-      );
-      
-      // Return UI-friendly format
+      // Store enhanced object format with metadata (upgrade from Connect simple boolean)
       const preference = {
         enabled: Boolean(enabled),
         lastModified: new Date().toISOString(),
         accountId: user.accountId
       };
+      
+      await api.asUser().requestJira(
+        route`/rest/api/3/user/properties/${USER_PREFERENCE_KEY}?accountId=${user.accountId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(preference)
+        }
+      );
+      
       return { success: true, preference, action: 'set' };
     }
   } catch (error) {
