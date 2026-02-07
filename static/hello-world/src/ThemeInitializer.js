@@ -7,9 +7,7 @@ export function ThemeInitializer({ children }) {
   useEffect(() => {
     const initializeTheme = async () => {
       try {
-        console.log('ThemeInitializer: Enabling Forge theming...');
         await view.theme.enable();
-        console.log('ThemeInitializer: Theming enabled successfully');
         setThemeReady(true);
       } catch (error) {
         console.error('ThemeInitializer: Failed to enable theming:', error);
@@ -22,7 +20,6 @@ export function ThemeInitializer({ children }) {
 
   // Wait for theme to be ready before rendering children
   if (!themeReady) {
-    console.log('ThemeInitializer: Waiting for theme to be ready...');
     return null; // or a loading spinner
   }
 

@@ -28,7 +28,6 @@ function convertContextToRoute (context) {
     url += `/modal/${context.extension.modal.type}`;
   }
 
-  console.log('url', url);
   return url;
 }
 
@@ -44,7 +43,6 @@ export function SpaRouter (props) {
       try {
         // Use Forge's view.createHistory() as recommended
         const history = await view.createHistory();
-        console.log('Setting new history', history);
         setNavigator(history);
 
         // Set initial values from the history object
@@ -63,7 +61,6 @@ export function SpaRouter (props) {
 
         // Store cleanup function reference
         historyCleanupRef.current = unsubscribe;
-        console.log('created history', history);
       } catch (e) {
         console.error('view createHistory', e);
 
