@@ -4,8 +4,8 @@ import api, { route } from '@forge/api';
 const resolver = new Resolver();
 
 // Constants for property keys
-const ADMIN_CONFIG_KEY = 'entity-properties-admin-config';
-const USER_PREFERENCE_KEY = 'entity-properties-user-preference';
+const ADMIN_CONFIG_KEY = 'ep-tool.disabled-for-all';
+const USER_PREFERENCE_KEY = 'ep-tool.enabled-for-me';
 
 // Helper function to check if user has admin permissions
 async function checkAdminPermissions() {
@@ -42,7 +42,7 @@ async function getAdminConfigInternal() {
 
     if (response.status === 404) {
       // No admin config exists yet - return default
-      return { defaultEnabled: true, source: 'default' };
+      return { defaultEnabled: true, disabledForAll: false, source: 'default' };
     }
 
     const property = await response.json();
@@ -50,11 +50,17 @@ async function getAdminConfigInternal() {
     const parsedValue = typeof property.value === 'string'
       ? JSON.parse(property.value)
       : property.value;
-    return { ...parsedValue, source: 'admin' };
+    
+    // Convert inverted logic for UI compatibility
+    return { 
+      ...parsedValue, 
+      defaultEnabled: !parsedValue.disabledForAll,
+      source: 'admin' 
+    };
   } catch (error) {
     console.error('Error getting admin config:', error);
     // Return safe default on error
-    return { defaultEnabled: true, source: 'error' };
+    return { defaultEnabled: true, disabledForAll: false, source: 'error' };
   }
 }
 
@@ -67,7 +73,7 @@ resolver.define('getAdminConfig', async (req) => {
 resolver.define('setAdminConfig', async (req) => {
   console.log('setAdminConfig called with payload:', req.payload);
 
-  const { defaultEnabled } = req.payload;
+  const { disabledForAll } = req.payload;
 
   try {
     console.log('Checking admin permissions...');
@@ -85,7 +91,7 @@ resolver.define('setAdminConfig', async (req) => {
     console.log('Current user:', { accountId: user.accountId, displayName: user.displayName });
 
     const config = {
-      defaultEnabled: Boolean(defaultEnabled),
+      disabledForAll: Boolean(disabledForAll),
       lastModified: new Date().toISOString(),
       modifiedBy: user.accountId,
       modifiedByDisplayName: user.displayName
@@ -184,7 +190,15 @@ async function getUserPreferenceInternal({ accountId } = {}) {
     const parsedValue = typeof property.value === 'string'
       ? JSON.parse(property.value)
       : property.value;
-    return { ...parsedValue, source: 'user' };
+    
+    // Handle both Connect simple boolean and Forge object format  
+    if (typeof parsedValue === 'boolean') {
+      // Connect format - simple boolean
+      return { enabled: parsedValue, source: 'user' };
+    } else {
+      // Forge format - object with metadata
+      return { ...parsedValue, source: 'user' };
+    }
   } catch (error) {
     console.error('Error getting user preference:', error);
     return { enabled: null, source: 'error' };
@@ -203,14 +217,9 @@ resolver.define('setUserPreference', async (req) => {
   const { enabled } = req.payload;
   try {
     const user = await getCurrentUser();
-    const preference = {
-      enabled: enabled === null ? null : Boolean(enabled),
-      lastModified: new Date().toISOString(),
-      accountId: user.accountId
-    };
 
     if (enabled === null) {
-      // User wants to use admin default - delete the preference
+      // User wants to use admin default - delete the preference (like Connect)
       try {
         await api.asUser().requestJira(
           route`/rest/api/3/user/properties/${USER_PREFERENCE_KEY}?accountId=${user.accountId}`, {
@@ -226,7 +235,13 @@ resolver.define('setUserPreference', async (req) => {
         throw deleteError;
       }
     } else {
-      // Set explicit preference
+      // Store enhanced object format with metadata (upgrade from Connect simple boolean)
+      const preference = {
+        enabled: Boolean(enabled),
+        lastModified: new Date().toISOString(),
+        accountId: user.accountId
+      };
+      
       await api.asUser().requestJira(
         route`/rest/api/3/user/properties/${USER_PREFERENCE_KEY}?accountId=${user.accountId}`, {
           method: 'PUT',
@@ -234,6 +249,7 @@ resolver.define('setUserPreference', async (req) => {
           body: JSON.stringify(preference)
         }
       );
+      
       return { success: true, preference, action: 'set' };
     }
   } catch (error) {

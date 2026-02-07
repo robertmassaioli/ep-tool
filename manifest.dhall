@@ -1,34 +1,56 @@
-let -- Define the proper Forge display conditions structure
+let -- Define the proper Forge display conditions structure using Connect property names
     entityPropertyDisplayConditions = {
       or = {
-        -- User explicitly enabled  
+        -- Case 1: User explicitly enabled - New Forge object format
         entityPropertyEqualTo = {
           entity = "user",
-          propertyKey = "entity-properties-user-preference", 
+          propertyKey = "ep-tool.enabled-for-me",
           objectName = "enabled",
           value = "true"
         },
-        -- No user preference AND (admin enabled OR no admin config exists)
+        
+        -- Case 2: User explicitly enabled - Old Connect boolean format (using double negative)
+        not = {
+          not = {
+            entityPropertyEqualTo = {
+              entity = "user",
+              propertyKey = "ep-tool.enabled-for-me",
+              value = "true"
+            }
+          }
+        },
+        
+        -- Case 3: No user preference AND admin allows  
         and = {
           not = {
             entityPropertyExists = {
               entity = "user",
-              propertyKey = "entity-properties-user-preference"
+              propertyKey = "ep-tool.enabled-for-me"
             }
           },
           or = {
-            -- Admin explicitly enabled
+            -- Admin explicitly enabled - New Forge object format
             entityPropertyEqualTo = {
               entity = "app",
-              propertyKey = "entity-properties-admin-config",
-              objectName = "defaultEnabled", 
-              value = "true"
+              propertyKey = "ep-tool.disabled-for-all",
+              objectName = "disabledForAll",
+              value = "false"
+            },
+            -- Admin explicitly enabled - Old Connect boolean format (using double negative)
+            not = {
+              not = {
+                entityPropertyEqualTo = {
+                  entity = "app",
+                  propertyKey = "ep-tool.disabled-for-all",
+                  value = "false"
+                }
+              }
             },
             -- No admin config exists (default to enabled)
             not = {
               entityPropertyExists = {
-                entity = "app", 
-                propertyKey = "entity-properties-admin-config"
+                entity = "app",
+                propertyKey = "ep-tool.disabled-for-all"
               }
             }
           }
