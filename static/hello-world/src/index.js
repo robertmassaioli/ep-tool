@@ -14,9 +14,7 @@ import { ProjectPropertyApi } from './apis/project';
 import { IssuePropertyApi } from './apis/issue';
 import { UserSelector } from './UserSelector';
 import { IssueTypeSelector } from './IssueTypeSelector';
-import { SpaRouter } from './SpaRouter';
-import { ContextRoute } from './ContextRouter';
-import { ViewContext } from './ViewContext';
+import { SpaRouter, ContextRoute, ForgeContextProvider } from 'forge-module-router';
 import { DashboardSelector } from './DashboardSelector';
 import { WorkflowSelector } from './WorkflowSelector';
 import { EntityPropertyGlobalHome } from './EntityPropertyGlobalHome';
@@ -27,7 +25,7 @@ import { AdminPage } from './AdminPage';
 ReactDOM.render(
   <React.StrictMode>
     <ThemeInitializer>
-      <ViewContext>
+      <ForgeContextProvider>
         <ContextRoute moduleKey='project-entity-properties'>
           <ContextRoute noModal>
             <App propertyApi={ProjectPropertyApi} />
@@ -68,7 +66,7 @@ ReactDOM.render(
             <AdminPage />
           </ContextRoute>
         </ContextRoute>
-      </ViewContext>
+      </ForgeContextProvider>
     </ThemeInitializer>
   </React.StrictMode>,
   document.getElementById('root')

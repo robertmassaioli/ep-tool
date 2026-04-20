@@ -17,7 +17,7 @@ import Form, {
 } from '@atlaskit/form';
 
 import styled from 'styled-components';
-import { useViewContext } from './ViewContext';
+import { useForgeContext } from 'forge-module-router';
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ export const TYPE_CREATE = 'add-property-create';
 export const TYPE_CLOSE = 'add-property-close';
 
 export const AddPropertyModal = (props) => {
-  const context = useViewContext();
+  const context = useForgeContext();
   const useText = !!context?.extension?.modal?.useText;
 
   function closeModal () {
