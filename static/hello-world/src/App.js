@@ -6,12 +6,12 @@ import { Property } from './Property';
 import EditorAddIcon from '@atlaskit/icon/glyph/editor/add';
 import Button from '@atlaskit/button';
 import { TYPE_CREATE } from './AddPropertyModal';
-import { useViewContext } from './ViewContext';
+import { useForgeContext } from 'forge-module-router';
 
 function App (props) {
   const { propertyApi } = props;
   const [entityPropertyState, setEntityPropertyState] = useState(undefined);
-  const context = useViewContext();
+  const context = useForgeContext();
 
   async function loadEntityPropertyState () {
     const entityId = propertyApi.extractEntityId(context);

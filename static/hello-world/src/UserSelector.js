@@ -9,7 +9,7 @@ import { isPresent } from 'ts-is-present';
 import { getUserPropertyApi } from './apis/user';
 import App from './App';
 import styled from 'styled-components';
-import { useViewContext } from './ViewContext';
+import { useForgeContext } from 'forge-module-router';
 import { SelectZIndexFix } from './SelectZIndexFix';
 
 const AppContainer = styled.div`
@@ -59,7 +59,7 @@ function toLabel (user, currentUserAccountId) {
 export function UserSelector () {
   const [initialState, setInitialState] = useState(undefined);
   const [currentAaid, setCurrentAaid] = useState(undefined);
-  const context = useViewContext();
+  const context = useForgeContext();
 
   useEffectAsync(async () => {
     const userDetails = await getUser(context.accountId);
