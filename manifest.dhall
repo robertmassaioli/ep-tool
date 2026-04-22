@@ -60,7 +60,7 @@ let -- Define the proper Forge display conditions structure using Connect proper
 
 in { app =
   { id = "ari:cloud:ecosystem::app/1c0636dd-b020-48a5-b68b-0d3f2fe06134"
-  , runtime.name = "nodejs20.x"
+  , runtime.name = "nodejs22.x"
   }
 , modules =
   { function = [ { handler = "index.handler", key = "resolver" } ]
